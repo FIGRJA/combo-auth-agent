@@ -19,7 +19,6 @@ public class propery {
     }
 
     @SerializedName("signature")
-    @Nullable
     public String signature() {
         return this.signature;
     }
@@ -27,7 +26,7 @@ public class propery {
         this(name, value, (String)null);
     }
 
-    public propery(String name, String value, @Nullable String signature) {
+    public propery(String name, String value,  String signature) {
         this.name = name;
         this.value = value;
         this.signature = signature;
