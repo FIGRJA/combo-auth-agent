@@ -6,10 +6,7 @@ import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
 import org.figrja.combo_auth.auth;
 import org.figrja.combo_auth.config.debuglogger.LoggerMain;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.*;
 import java.util.Iterator;
 import java.util.Map;
@@ -18,109 +15,23 @@ import java.util.UUID;
 
 public class httpHelper {
 
-
     private static final Gson gson = new Gson();
-
-    private static Proxy proxy = Proxy.NO_PROXY;
 
     static LoggerMain LOGGER = auth.Logger;
 
-    public static void setProxy(Proxy proxyN) {
-        proxy = proxyN;
-    }
-
-    protected static HttpURLConnection createUrlConnection(URL url) throws IOException {
-        LOGGER.debugRes("Opening connection to " + url.toString());
-        HttpURLConnection connection = (HttpURLConnection)url.openConnection(proxy);
-        connection.setConnectTimeout(15000);
-        connection.setReadTimeout(15000);
-        connection.setUseCaches(false);
-        return connection;
-    }
-
-    public static String performPostRequest(URL url, String post, String contentType) throws IOException {
-        HttpURLConnection connection = createUrlConnection(url);
-        byte[] postAsBytes = post.getBytes(Charsets.UTF_8);
-        connection.setRequestProperty("Content-Type", contentType + "; charset=utf-8");
-        connection.setRequestProperty("Content-Length", "" + postAsBytes.length);
-        connection.setDoOutput(true);
-        LOGGER.debugRes("Writing POST data to " + url + ": " + post);
-        OutputStream outputStream = null;
-
-        try {
-            outputStream = connection.getOutputStream();
-            IOUtils.write(postAsBytes, outputStream);
-        } finally {
-            IOUtils.closeQuietly(outputStream);
-        }
-
-        LOGGER.debugRes("Reading data from " + url);
-        InputStream inputStream = null;
-
-        String var10;
-        try {
-            String result;
-            try {
-                inputStream = connection.getInputStream();
-                result = IOUtils.toString(inputStream, Charsets.UTF_8);
-                LOGGER.debug("Successful read, server response was " + connection.getResponseCode());
-                LOGGER.debugRes("Response: " + result);
-                return result;
-            } catch (IOException var19) {
-                IOUtils.closeQuietly(inputStream);
-                inputStream = connection.getErrorStream();
-                if (inputStream == null) {
-                    LOGGER.debug("Request failed");
-                    throw var19;
-                }
-
-                LOGGER.debugRes("Reading error page from " + url);
-                result = IOUtils.toString(inputStream, Charsets.UTF_8);
-                LOGGER.debug("Successful read, server response was " + connection.getResponseCode());
-                LOGGER.debugRes("Response: " + result);
-                var10 = result;
+    public static String getRequest(URL url) throws Exception {
+        StringBuilder result = new StringBuilder();
+        LOGGER.debug(url.toString());
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(conn.getInputStream()))) {
+            for (String line; (line = reader.readLine()) != null; ) {
+                result.append(line);
             }
-        } finally {
-            IOUtils.closeQuietly(inputStream);
         }
-
-        return var10;
-    }
-
-    public static String performGetRequest(URL url) throws IOException {
-        Validate.notNull(url);
-        HttpURLConnection connection = createUrlConnection(url);
-        LOGGER.debugRes("Reading data from " + url);
-        InputStream inputStream = null;
-
-        String var6;
-        try {
-            String result;
-            try {
-                inputStream = connection.getInputStream();
-                result = IOUtils.toString(inputStream, Charsets.UTF_8);
-                LOGGER.debug("Successful read, server response was " + connection.getResponseCode());
-                LOGGER.debugRes("Response: " + result);
-                return result;
-            } catch (IOException var10) {
-                IOUtils.closeQuietly(inputStream);
-                inputStream = connection.getErrorStream();
-                if (inputStream == null) {
-                    LOGGER.debug("Request failed");
-                    throw var10;
-                }
-            }
-
-            LOGGER.debugRes("Reading error page from " + url);
-            result = IOUtils.toString(inputStream, Charsets.UTF_8);
-            LOGGER.debug("Successful read, server response was " + connection.getResponseCode());
-            LOGGER.debugRes("Response: " + result);
-            var6 = result;
-        } finally {
-            IOUtils.closeQuietly(inputStream);
-        }
-
-        return var6;
+        LOGGER.debug("code: "+ conn.getResponseCode());
+        return result.toString();
     }
 
     public static URL constantURL(String url) {
@@ -173,9 +84,9 @@ public class httpHelper {
         }
     }
 
-    public static resultElyGson makeRequest(URL url) throws AuthenticationException {
+    public static resultElyGson makeRequest(URL url) throws AuthenticationUnavailableException {
         try {
-            String jsonResult = performGetRequest(url) ;
+            String jsonResult = getRequest(url) ;
             resultElyGson result = gson.fromJson(jsonResult, resultElyGson.class);
             if (result == null) {
                 return null;
@@ -184,7 +95,7 @@ public class httpHelper {
             }
             result.setId(str2uuid(result.id));
             return result;
-        } catch (IOException var6) {
+        } catch (Exception var6) {
             throw new AuthenticationUnavailableException("Cannot contact authentication server", var6);
         }
     }

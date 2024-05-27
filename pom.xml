@@ -31,7 +31,7 @@
             <groupId>com.mojang</groupId>
             <artifactId>authlib</artifactId>
             <version>6.0.52</version>
-            <systemPath>C:/Users/Dima/.m2/repository/com/mojang/authlib/1.5.25/authlib-1.5.25.jar</systemPath>
+            <systemPath>D:/Desktop/s1/mods/combo-auth-agent/authlib-6.0.52.jar</systemPath>
             <scope>system</scope>
         </dependency>
         <dependency>

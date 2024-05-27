@@ -11,10 +11,6 @@ import org.figrja.combo_auth.config.configGson;
 import org.figrja.combo_auth.config.debuglogger.LoggerMain;
 import org.figrja.combo_auth.ely.by.httpHelper;
 import org.figrja.combo_auth.ely.by.resultElyGson;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.net.InetAddress;
 import java.net.URL;
@@ -22,15 +18,13 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-@Mixin(YggdrasilMinecraftSessionService.class)
 public class ReCheckAuth {
 
     LoggerMain LOGGER = auth.Logger;
 
     configGson CONFIG = auth.getConfig();
 
-    @Inject(at = @At("HEAD"),method = "hasJoinedServer",remap = false,cancellable = true)
-    public void AuthListCheck(GameProfile profileName, String serverId, InetAddress address, CallbackInfoReturnable<GameProfile> cir) throws AuthenticationUnavailableException {
+    public GameProfile AuthListCheck(GameProfile profileName, String serverId, InetAddress address) throws AuthenticationUnavailableException {
         Map<String, Object> arguments = new HashMap();
         arguments.put("username", profileName.getName());
         arguments.put("serverId", serverId);
@@ -73,26 +67,17 @@ public class ReCheckAuth {
                         result.getProperties().putAll(authSchema.getProperty());
                     }
                     LOGGER.info("logging from "+name);
-                    cir.setReturnValue(result);
-                    cir.cancel();
-                    tr = false;
-                    AuthenticationException = false;
-                    break;
+                    return result;
                 }
             } catch (AuthenticationUnavailableException var7) {
                 tr = true;
                 var6 = var7;
-            } catch (AuthenticationException var7) {
-                AuthenticationException = true;
             }
         }
         if (tr){
             throw var6;
         }
-        if (AuthenticationException){
-            cir.setReturnValue(null);
-        }
-        cir.cancel();
+        return null;
     }
 
 }

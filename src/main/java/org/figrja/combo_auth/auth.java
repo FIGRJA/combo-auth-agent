@@ -11,6 +11,7 @@ import org.figrja.combo_auth.config.debuglogger.LoggerMain;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileOwnerAttributeView;
 import java.util.Scanner;
 
 
@@ -21,12 +22,12 @@ public class auth {
 
     public static LoggerMain Logger;
 
-    @Override
+
     public void onInitializeServer() {
         Logger = new Logger("combo_auth");
         Logger.info("start loading config");
 
-        File ConfFile = FabricLoader.getInstance().getConfigDir().resolve( "combo_auth.json" ).toFile();
+        File ConfFile = new File("config/"+"combo_auth.json");
 
         try {
             config = gson.fromJson(new JsonReader(new FileReader(ConfFile)),configGson.class);

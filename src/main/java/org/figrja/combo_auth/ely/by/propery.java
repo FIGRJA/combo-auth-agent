@@ -1,7 +1,6 @@
 package org.figrja.combo_auth.ely.by;
 
 import com.google.gson.annotations.SerializedName;
-import org.jetbrains.annotations.Nullable;
 
 public class propery {
 
