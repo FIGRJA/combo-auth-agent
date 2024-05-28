@@ -1,10 +1,7 @@
 package org.figrja.combo_auth_ahent;
 
 import org.figrja.combo_auth.mixin.methodKOSTblL;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.*;
 
 import java.io.IOException;
 
@@ -22,15 +19,57 @@ public class SWCV extends ClassVisitor {
     }
 
     @Override
+    public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+        System.out.println(name +" ex " +superName+" {");
+    }
+
+    @Override
+    public void visitSource(String source, String debug) {
+
+    }
+
+    @Override
+    public void visitOuterClass(String owner, String name, String descriptor) {
+
+    }
+
+    @Override
+    public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
+        return null;
+    }
+
+    @Override
+    public void visitAttribute(Attribute attribute) {
+
+    }
+
+    @Override
+    public void visitInnerClass(String name, String outerName, String innerName, int access) {
+
+    }
+
+    @Override
+    public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
+        System.out.println("    "+descriptor+" "+name);
+        return null;
+    }
+
+    @Override
     public MethodVisitor visitMethod(int access,String name , String desc , String signature,String[] exceptions){
+        System.out.println("    "+name+desc);
         if (name.equals("hasJoinedServer")){
+            ClassReader classReader;
             try {
-                ClassReader classReader = new ClassReader(methodKOSTblL.class.getName());
+                classReader = new ClassReader(methodKOSTblL.class.getCanonicalName());
             } catch (IOException e) {
+                System.out.println(methodKOSTblL.class.getCanonicalName());
+
                 throw new RuntimeException(e);
             }
             ClassWriter classWriter = new ClassWriter(2);
             ClassVisitor classVisitor = new SWCV(ASM4,classWriter);
+            classReader.accept(classVisitor,0);
+
             return mv;
         }
         if (name.equals("KOSTblL")){
@@ -41,4 +80,8 @@ public class SWCV extends ClassVisitor {
         return cv.visitMethod(access, name, desc, signature, exceptions);
     }
 
+    @Override
+    public void visitEnd() {
+        System.out.println("}");
+    }
 }

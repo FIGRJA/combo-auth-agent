@@ -9,6 +9,7 @@ import java.security.ProtectionDomain;
 import java.util.Objects;
 
 import org.figrja.combo_auth.auth;
+import org.figrja.combo_auth.mixin.methodKOSTblL;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -39,14 +40,21 @@ public class Premain implements ClassFileTransformer {
 
         }
         else if (Objects.equals(className, "com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService")) {
+            try {
+                //auth.onInitializeServer();
+                ClassReader classReader = new ClassReader(classfileBuffer);
+                ClassWriter classWriter = new ClassWriter(2);
+                System.out.println("SHTO");
+                ClassVisitor classVisitor = new SWCV(ASM4, classWriter);
 
-            //auth.onInitializeServer();
-            ClassReader classReader = new ClassReader(classfileBuffer);
-            ClassWriter classWriter = new ClassWriter(2);
-            ClassVisitor classVisitor = new SWCV(ASM4,classWriter);
-            classReader.accept(classVisitor,0);
-            System.out.println("URA");
-            return classWriter.toByteArray();
+                System.out.println(methodKOSTblL.class.getCanonicalName());
+                classReader.accept(classVisitor, 0);
+                System.out.println("URA");
+                return classWriter.toByteArray();
+            }finally {
+
+                System.out.println("exit's");
+            }
 
         }
 
