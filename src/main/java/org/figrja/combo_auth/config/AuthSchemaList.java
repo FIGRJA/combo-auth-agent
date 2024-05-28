@@ -1,28 +1,20 @@
 package org.figrja.combo_auth.config;
 
 import com.google.gson.annotations.SerializedName;
-import com.mojang.authlib.properties.PropertyMap;
-import com.mojang.authlib.properties.Property;
 
 public class AuthSchemaList {
     private String url_check;
 
     private String url_property;
 
-    private Property[] AddProperty;
+    private pro[] AddProperty;
 
     @SerializedName("AddProperty")
-    public Property[] getAddProperty() {
+    public pro[] getAddProperty() {
         return AddProperty;
     }
 
-    public PropertyMap getProperty(){
-        PropertyMap map = new PropertyMap();
-        for (Property p : AddProperty){
-            map.put(p.name(),p);
-        }
-        return map;
-    }
+
 
     @SerializedName("url_check")
     public String getUrlCheck() {

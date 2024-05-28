@@ -3,12 +3,14 @@ package org.figrja.combo_auth.mixin;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
+import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 import org.figrja.combo_auth.auth;
 import org.figrja.combo_auth.config.AuthSchemaList;
 import org.figrja.combo_auth.config.configGson;
 import org.figrja.combo_auth.config.debuglogger.LoggerMain;
+import org.figrja.combo_auth.config.pro;
 import org.figrja.combo_auth.ely.by.httpHelper;
 import org.figrja.combo_auth.ely.by.resultElyGson;
 
@@ -64,7 +66,7 @@ public class ReCheckAuth {
                     }
                     if (authSchema.getAddProperty()!=null){
                         LOGGER.debug("add custom property");
-                        result.getProperties().putAll(authSchema.getProperty());
+                        result.getProperties().putAll(getProperty(authSchema.getAddProperty()));
                     }
                     LOGGER.info("logging from "+name);
                     return result;
@@ -78,6 +80,18 @@ public class ReCheckAuth {
             throw var6;
         }
         return null;
+    }
+
+    public PropertyMap getProperty(pro[] AddProperty){
+        PropertyMap map = new PropertyMap();
+        for (pro p : AddProperty){
+            if (p.signature()!=null) {
+                map.put(p.name(), new Property(p.name(), p.value(), p.signature()));
+            }else {
+                map.put(p.name(), new Property(p.name(), p.value()));
+            }
+        }
+        return map;
     }
 
 }
