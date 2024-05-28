@@ -35,7 +35,7 @@ public class SWCV extends ClassVisitor {
 
     @Override
     public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
-        return null;
+        return cv.visitAnnotation(descriptor, visible);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class SWCV extends ClassVisitor {
     @Override
     public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
         System.out.println("    "+descriptor+" "+name);
-        return null;
+        return cv.visitField(access, name, descriptor, signature, value);
     }
 
     @Override
