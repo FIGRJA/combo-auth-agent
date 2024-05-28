@@ -11,6 +11,7 @@ import org.figrja.combo_auth.config.debuglogger.LoggerMain;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.FileOwnerAttributeView;
 import java.util.Scanner;
 
@@ -27,7 +28,9 @@ public class auth {
         Logger = new Logger("combo_auth");
         Logger.info("start loading config");
 
-        File ConfFile = new File("config/"+"combo_auth.json");
+        File ConfFile = new File("config","combo_auth.json");
+        Logger.info(ConfFile.getAbsolutePath());
+
 
         try {
             config = gson.fromJson(new JsonReader(new FileReader(ConfFile)),configGson.class);
@@ -74,6 +77,7 @@ public class auth {
         if (config != null) {
             Logger.info("combo_auth has been enabled!");
         }else{
+            Logger.info("combo_auth has not been enabled!");
             throw null;
         }
 

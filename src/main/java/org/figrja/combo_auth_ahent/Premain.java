@@ -19,19 +19,18 @@ import static org.objectweb.asm.Opcodes.ASM4;
 public class Premain implements ClassFileTransformer {
     static PrintWriter printWriter;
 
-    static auth auth;
+    static auth auth = new auth();
     public static void premain(String args, Instrumentation inst){
         System.out.println("Hello world!");
 
-        auth.onInitializeServer();
+
         inst.addTransformer(new Premain());
 
     }
 
     @Override
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
-        printWriter.println(loader.toString() +" - "+ className);
-        printWriter.flush();
+
         if (Objects.equals(className, "net/md_5/bungee/Bootstrap")){
             System.out.println("not support");
         }
@@ -40,15 +39,13 @@ public class Premain implements ClassFileTransformer {
 
         }
         else if (Objects.equals(className, "com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService")) {
-            printWriter.println("LOL");
-            printWriter.flush();
 
-
-                ClassReader classReader = new ClassReader(classfileBuffer);
-                ClassWriter classWriter = new ClassWriter(2);
-                ClassVisitor classVisitor = new SWCV(ASM4,classWriter);
-                classReader.accept(classVisitor,0);
-                return classWriter.toByteArray();
+            auth.onInitializeServer();
+            ClassReader classReader = new ClassReader(classfileBuffer);
+            ClassWriter classWriter = new ClassWriter(2);
+            ClassVisitor classVisitor = new SWCV(ASM4,classWriter);
+            classReader.accept(classVisitor,0);
+            return classWriter.toByteArray();
 
         }
 
