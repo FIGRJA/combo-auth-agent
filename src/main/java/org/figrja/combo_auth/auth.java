@@ -48,6 +48,7 @@ public class auth {
                 }
             }
         }
+        Logger.info("lol");
 
         if (config.getGebugStatus() != null){
             Logger.info(config.getGebugStatus());
@@ -91,6 +92,7 @@ public class auth {
 
             printWriter.flush();
             printWriter.close();
+            Logger.info("ok");
         }else {
             Logger.info("wtf inputStream of config in jar is null too");
         }
