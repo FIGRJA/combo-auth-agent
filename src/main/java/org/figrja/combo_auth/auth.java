@@ -1,7 +1,8 @@
 package org.figrja.combo_auth;
 
 import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
+import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
 import org.figrja.combo_auth.config.configGson;
 import org.figrja.combo_auth.config.debuglogger.Debug;
 import org.figrja.combo_auth.config.debuglogger.DebugAll;
@@ -11,9 +12,6 @@ import org.figrja.combo_auth_ahent.Premain;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.FileOwnerAttributeView;
 import java.util.Scanner;
 
 
@@ -28,6 +26,9 @@ public class auth {
     public void onInitializeServer() {
         Logger = new Logger("combo_auth");
         Logger.info("start loading config");
+
+        Property a = new Property("name","value");
+        PropertyMap b = new PropertyMap();
 
         File ConfFile = new File("config","combo_auth.json");
         Logger.info(ConfFile.getAbsolutePath());

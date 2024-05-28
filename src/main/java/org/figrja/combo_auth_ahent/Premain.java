@@ -39,9 +39,9 @@ public class Premain implements ClassFileTransformer {
             System.out.println("hiii vanila!!");
 
         }
-        else if (Objects.equals(className, "com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService")) {
+        else if (Objects.equals(className, "com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionServices")) {
             try {
-                //auth.onInitializeServer();
+
                 ClassReader classReader = new ClassReader(classfileBuffer);
                 ClassWriter classWriter = new ClassWriter(2);
                 System.out.println("SHTO");
@@ -58,6 +58,12 @@ public class Premain implements ClassFileTransformer {
                 a.printStackTrace();
             }
 
+        } else if (Objects.equals(className, "com/mojang/authlib/GameProfile")) {
+            try {
+                auth.onInitializeServer();
+            }catch (Throwable b){
+                b.printStackTrace();
+            }
         }
 
         return classfileBuffer;

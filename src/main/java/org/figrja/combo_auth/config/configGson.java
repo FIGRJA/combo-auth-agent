@@ -1,7 +1,6 @@
 package org.figrja.combo_auth.config;
 
 import com.google.gson.annotations.SerializedName;
-import org.figrja.combo_auth.ely.by.propery;
 
 import java.util.HashMap;
 import java.util.List;
