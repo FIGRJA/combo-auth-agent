@@ -74,13 +74,13 @@ public class auth {
     private void defaultConf(File ConfFile) throws IOException {
         Logger.info("create new config");
         Files.createFile(ConfFile.toPath());
-        InputStream inputStream = Premain.class.getResourceAsStream("combo_auth.json");
+        InputStream inputStream = Premain.class.getClassLoader().getResourceAsStream("combo_auth.json");
         if (inputStream != null) {
             config = gson.fromJson(new JsonReader(new BufferedReader(new InputStreamReader(inputStream))),configGson.class);
         }else {
             Logger.info("wtf inputStream of config in jar is null");
         }
-        inputStream = Premain.class.getResourceAsStream("combo_auth.json");
+        inputStream = Premain.class.getClassLoader().getResourceAsStream("combo_auth.json");
         if (inputStream != null) {
             PrintWriter printWriter = new PrintWriter(ConfFile);
             Scanner scanner = new Scanner(inputStream);
