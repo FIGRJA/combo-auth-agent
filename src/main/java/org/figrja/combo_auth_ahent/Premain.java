@@ -14,7 +14,7 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 
-import static org.objectweb.asm.Opcodes.ASM4;
+import static org.objectweb.asm.Opcodes.ASM9;
 
 
 public class Premain implements ClassFileTransformer {
@@ -45,15 +45,17 @@ public class Premain implements ClassFileTransformer {
                 ClassReader classReader = new ClassReader(classfileBuffer);
                 ClassWriter classWriter = new ClassWriter(2);
                 System.out.println("SHTO");
-                ClassVisitor classVisitor = new SWCV(ASM4, classWriter);
+                ClassVisitor classVisitor = new SWCV(ASM9, classWriter);
 
                 System.out.println(methodKOSTblL.class.getCanonicalName());
                 classReader.accept(classVisitor, 0);
                 System.out.println("URA");
                 return classWriter.toByteArray();
-            }finally {
+            }catch (Throwable a){
 
-                System.out.println("exit's");
+                System.out.println(a.toString());
+                System.out.println(a.getMessage());
+                a.printStackTrace();
             }
 
         }

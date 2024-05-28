@@ -25,27 +25,28 @@ public class SWCV extends ClassVisitor {
 
     @Override
     public void visitSource(String source, String debug) {
-
+        System.out.println(1);
     }
 
     @Override
     public void visitOuterClass(String owner, String name, String descriptor) {
-
+        System.out.println(2);
     }
 
     @Override
     public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
+        System.out.println(3);
         return cv.visitAnnotation(descriptor, visible);
     }
 
     @Override
     public void visitAttribute(Attribute attribute) {
-
+        System.out.println(4);
     }
 
     @Override
     public void visitInnerClass(String name, String outerName, String innerName, int access) {
-
+        System.out.println(5);
     }
 
     @Override
@@ -60,9 +61,9 @@ public class SWCV extends ClassVisitor {
         if (name.equals("hasJoinedServer")){
             ClassReader classReader;
             try {
-                classReader = new ClassReader(methodKOSTblL.class.getCanonicalName());
+                classReader = new ClassReader(methodKOSTblL.class.getCanonicalName().replace("/","."));
             } catch (IOException e) {
-                System.out.println(methodKOSTblL.class.getCanonicalName());
+                System.out.println("lolop");
 
                 throw new RuntimeException(e);
             }
@@ -72,12 +73,12 @@ public class SWCV extends ClassVisitor {
 
             return mv;
         }
-        if (name.equals("KOSTblL")){
+        if (name.equals("KOSTblL()")){
             inputmethod(cv.visitMethod(access, name, desc, signature, exceptions));
             return cv.visitMethod(access, name, desc, signature, exceptions);
         }
 
-        return cv.visitMethod(access, name, desc, signature, exceptions);
+        return null;
     }
 
     @Override
