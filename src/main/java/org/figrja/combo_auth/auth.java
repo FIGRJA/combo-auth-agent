@@ -7,6 +7,7 @@ import org.figrja.combo_auth.config.debuglogger.Debug;
 import org.figrja.combo_auth.config.debuglogger.DebugAll;
 import org.figrja.combo_auth.config.debuglogger.Logger;
 import org.figrja.combo_auth.config.debuglogger.LoggerMain;
+import org.figrja.combo_auth_ahent.Premain;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -36,32 +37,15 @@ public class auth {
             config = gson.fromJson(new JsonReader(new FileReader(ConfFile)),configGson.class);
         } catch (FileNotFoundException e) {
             try {
-                Logger.info("create new config");
-                Files.createFile(ConfFile.toPath());
-                InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("combo_auth.json");
-                if (inputStream != null) {
-                    config = gson.fromJson(new JsonReader(new BufferedReader(new InputStreamReader(inputStream))),configGson.class);
-                }else {
-                    Logger.info("wtf inputStream of config in jar is null");
-                }
-                inputStream = this.getClass().getClassLoader().getResourceAsStream("combo_auth.json");
-                if (inputStream != null) {
-                    PrintWriter printWriter = new PrintWriter(ConfFile);
-                    Scanner scanner = new Scanner(inputStream);
-                    while (scanner.hasNextLine()) {
-                        printWriter.println(scanner.nextLine());
-                    }
-                    scanner.close();
-
-                printWriter.flush();
-                printWriter.close();
-                }else {
-                    Logger.info("wtf inputStream of config in jar is null too");
-                }
-                inputStream.close();
+                defaultConf(ConfFile);
             } catch (IOException ex) {
-                Logger.info("can't create new config");
-                throw new RuntimeException(ex);
+                ConfFile.getParentFile().mkdir();
+                try {
+                    defaultConf(ConfFile);
+                } catch (IOException exc) {
+                    Logger.info("can't create new config");
+                    throw new RuntimeException(exc);
+                }
             }
         }
 
@@ -85,5 +69,31 @@ public class auth {
 
     public static configGson getConfig() {
         return config;
+    }
+
+    private void defaultConf(File ConfFile) throws IOException {
+        Logger.info("create new config");
+        Files.createFile(ConfFile.toPath());
+        InputStream inputStream = Premain.class.getResourceAsStream("combo_auth.json");
+        if (inputStream != null) {
+            config = gson.fromJson(new JsonReader(new BufferedReader(new InputStreamReader(inputStream))),configGson.class);
+        }else {
+            Logger.info("wtf inputStream of config in jar is null");
+        }
+        //inputStream = Premain.class.getResourceAsStream("combo_auth.json");
+        if (inputStream != null) {
+            PrintWriter printWriter = new PrintWriter(ConfFile);
+            Scanner scanner = new Scanner(inputStream);
+            while (scanner.hasNextLine()) {
+                printWriter.println(scanner.nextLine());
+            }
+            scanner.close();
+
+            printWriter.flush();
+            printWriter.close();
+        }else {
+            Logger.info("wtf inputStream of config in jar is null too");
+        }
+        inputStream.close();
     }
 }
