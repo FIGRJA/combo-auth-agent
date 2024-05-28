@@ -1,8 +1,8 @@
 package org.figrja.combo_auth.config;
 
 import com.google.gson.annotations.SerializedName;
-import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
+import com.mojang.authlib.properties.Property;
 
 public class AuthSchemaList {
     private String url_check;
