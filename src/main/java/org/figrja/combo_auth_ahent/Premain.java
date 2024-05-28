@@ -40,11 +40,12 @@ public class Premain implements ClassFileTransformer {
         }
         else if (Objects.equals(className, "com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService")) {
 
-            auth.onInitializeServer();
+            //auth.onInitializeServer();
             ClassReader classReader = new ClassReader(classfileBuffer);
             ClassWriter classWriter = new ClassWriter(2);
             ClassVisitor classVisitor = new SWCV(ASM4,classWriter);
             classReader.accept(classVisitor,0);
+            System.out.println("URA");
             return classWriter.toByteArray();
 
         }

@@ -34,7 +34,9 @@ public class auth {
 
 
         try {
-            config = gson.fromJson(new JsonReader(new FileReader(ConfFile)),configGson.class);
+            Logger.info("-kek");
+            config = gson.fromJson(new FileReader(ConfFile),configGson.class);
+            Logger.info("kek");
         } catch (FileNotFoundException e) {
             try {
                 defaultConf(ConfFile);
@@ -63,7 +65,6 @@ public class auth {
             Logger.info("combo_auth has been enabled!");
         }else{
             Logger.info("combo_auth has not been enabled!");
-            throw null;
         }
 
     }
@@ -77,7 +78,7 @@ public class auth {
         Files.createFile(ConfFile.toPath());
         InputStream inputStream = Premain.class.getClassLoader().getResourceAsStream("combo_auth.json");
         if (inputStream != null) {
-            config = gson.fromJson(new JsonReader(new BufferedReader(new InputStreamReader(inputStream))),configGson.class);
+            config = gson.fromJson(new BufferedReader(new InputStreamReader(inputStream)),configGson.class);
         }else {
             Logger.info("wtf inputStream of config in jar is null");
         }
