@@ -1,8 +1,6 @@
 package org.figrja.combo_auth;
 
 import com.google.gson.Gson;
-import com.mojang.authlib.properties.Property;
-import com.mojang.authlib.properties.PropertyMap;
 import org.figrja.combo_auth.config.configGson;
 import org.figrja.combo_auth.config.debuglogger.Debug;
 import org.figrja.combo_auth.config.debuglogger.DebugAll;
@@ -27,15 +25,13 @@ public class auth {
         Logger = new Logger("combo_auth");
         Logger.info("start loading config");
 
-        Property a = new Property("name","value");
-        PropertyMap b = new PropertyMap();
 
         File ConfFile = new File("config","combo_auth.json");
         Logger.info(ConfFile.getAbsolutePath());
 
 
         try {
-            Logger.info("-kek");
+            Logger.info("+kek");
             config = gson.fromJson(new FileReader(ConfFile),configGson.class);
             Logger.info("kek");
         } catch (FileNotFoundException e) {
