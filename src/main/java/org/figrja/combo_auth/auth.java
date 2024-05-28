@@ -80,7 +80,7 @@ public class auth {
         }else {
             Logger.info("wtf inputStream of config in jar is null");
         }
-        //inputStream = Premain.class.getResourceAsStream("combo_auth.json");
+        inputStream = Premain.class.getResourceAsStream("combo_auth.json");
         if (inputStream != null) {
             PrintWriter printWriter = new PrintWriter(ConfFile);
             Scanner scanner = new Scanner(inputStream);
