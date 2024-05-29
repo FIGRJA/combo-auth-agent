@@ -16,7 +16,7 @@ import java.util.Scanner;
 public class auth {
 
     private static configGson config;
-    private static final Gson gson = new Gson();
+    private final Gson gson = new Gson();
 
     public static LoggerMain Logger;
 

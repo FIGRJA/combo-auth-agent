@@ -15,13 +15,10 @@ public class SWCV extends ClassVisitor {
         super(api, cv);
 
     }
-    static MethodVisitor mv = null;
+    public static MethodVisitor mv = null;
 
     LoggerMain LOGGER = auth.Logger;
 
-    public void inputmethod(MethodVisitor m){
-        mv = m;
-    }
 
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
@@ -78,7 +75,7 @@ public class SWCV extends ClassVisitor {
         }
         if (name.equals("KOSTblL()")){
             LOGGER.debug("found our method");
-            inputmethod(cv.visitMethod(access, name, desc, signature, exceptions));
+            mv = cv.visitMethod(access, name, desc, signature, exceptions);
             return cv.visitMethod(access, name, desc, signature, exceptions);
         }
 
