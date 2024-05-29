@@ -15,12 +15,12 @@ public class SWCV extends ClassVisitor {
         super(api, cv);
 
     }
-    MethodVisitor mv = null;
+    static MethodVisitor mv = null;
 
     LoggerMain LOGGER = auth.Logger;
 
-    public void inputmethod(MethodVisitor mv){
-        this.mv = mv;
+    public void inputmethod(MethodVisitor m){
+        mv = m;
     }
 
     @Override
