@@ -66,7 +66,7 @@ public class SWCV extends ClassVisitor {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            ClassWriter classWriter = new ClassWriter(0);
+            ClassWriter classWriter = new ClassWriter(classReader,2);
             ClassVisitor classVisitor = new SWCV(ASM7,classWriter);
             classReader.accept(classVisitor,0);
             return mv;

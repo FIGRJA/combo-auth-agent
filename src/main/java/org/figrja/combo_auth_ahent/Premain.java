@@ -18,7 +18,6 @@ import static org.objectweb.asm.Opcodes.ASM7;
 
 
 public class Premain implements ClassFileTransformer {
-    static PrintWriter printWriter;
 
     static auth auth = new auth();
     public static void premain(String args, Instrumentation inst){
@@ -43,7 +42,7 @@ public class Premain implements ClassFileTransformer {
             try {
                 auth.onInitializeServer();
                 ClassReader classReader = new ClassReader(classfileBuffer);
-                ClassWriter classWriter = new ClassWriter(2);
+                ClassWriter classWriter = new ClassWriter(classReader,2);
                 System.out.println("SHTO");
                 ClassVisitor classVisitor = new SWCV(ASM7, classWriter);
 
