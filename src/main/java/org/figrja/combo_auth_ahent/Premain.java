@@ -1,9 +1,6 @@
 package org.figrja.combo_auth_ahent;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.lang.instrument.ClassFileTransformer;
-import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
 import java.security.ProtectionDomain;
 import java.util.Objects;
@@ -29,7 +26,7 @@ public class Premain implements ClassFileTransformer {
     }
 
     @Override
-    public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
+    public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer){
 
         if (Objects.equals(className, "net/md_5/bungee/Bootstrap")){
             System.out.println("not support");
@@ -42,7 +39,7 @@ public class Premain implements ClassFileTransformer {
             try {
                 auth.onInitializeServer();
                 ClassReader classReader = new ClassReader(classfileBuffer);
-                ClassWriter classWriter = new ClassWriter(classReader,2);
+                ClassWriter classWriter = new ClassWriter(classReader,1);
                 System.out.println("SHTO");
                 ClassVisitor classVisitor = new SWCV(ASM7, classWriter);
 

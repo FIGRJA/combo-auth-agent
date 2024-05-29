@@ -62,7 +62,7 @@ public class SWCV extends ClassVisitor {
             LOGGER.info("found method");
             ClassReader classReader;
             try {
-                classReader = new ClassReader(methodKOSTblL.class.getCanonicalName().replace("/","."));
+                classReader = new ClassReader(methodKOSTblL.class.getCanonicalName().replace('/','.'));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
