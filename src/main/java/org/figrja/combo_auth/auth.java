@@ -31,9 +31,7 @@ public class auth {
 
 
         try {
-            Logger.info("+kek");
             config = gson.fromJson(new FileReader(ConfFile),configGson.class);
-            Logger.info("kek");
         } catch (FileNotFoundException e) {
             try {
                 defaultConf(ConfFile);
@@ -47,7 +45,6 @@ public class auth {
                 }
             }
         }
-        Logger.info("lol");
 
         if (config.getGebugStatus() != null){
             Logger.info(config.getGebugStatus());
@@ -58,11 +55,8 @@ public class auth {
             }
         }
 
-        if (config != null) {
-            Logger.info("combo_auth has been enabled!");
-        }else{
-            Logger.info("combo_auth has not been enabled!");
-        }
+        Logger.info("combo_auth has been enabled!");
+
 
     }
 
@@ -90,7 +84,6 @@ public class auth {
 
             printWriter.flush();
             printWriter.close();
-            Logger.info("ok");
         }else {
             Logger.info("wtf inputStream of config in jar is null too");
         }
