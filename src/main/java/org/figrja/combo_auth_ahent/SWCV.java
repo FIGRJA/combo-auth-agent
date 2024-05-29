@@ -14,7 +14,7 @@ public class SWCV extends ClassVisitor {
         super(api, cv);
 
     }
-    public static MethodVisitor mv = null;
+    public static MethodVisitor mv;
 
     LoggerMain LOGGER = auth.Logger;
 

@@ -27,8 +27,10 @@ public class methodBOP extends ClassVisitor {
         LOGGER.debug("    "+name+desc);
         if (name.equals("KOSTblL()")){
             LOGGER.debug("found our method");
-            SWCV.mv = cv.visitMethod(access, name, desc, signature, exceptions);
-            return cv.visitMethod(access, name, desc, signature, exceptions);
+            MethodVisitor nnn = cv.visitMethod(access, name, desc, signature, exceptions);
+            LOGGER.debug(String.valueOf(nnn==null));
+            SWCV.mv = nnn;
+            return nnn;
         }
 
         return null;
