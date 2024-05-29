@@ -19,6 +19,6 @@ public class DebugAll extends LoggerMain{
 
     @Override
     public void debugRes(String mes) {
-        System.out.println("["+name+"/debug] "+mes);
+        System.out.println("["+name+"/deBug] "+mes);
     }
 }

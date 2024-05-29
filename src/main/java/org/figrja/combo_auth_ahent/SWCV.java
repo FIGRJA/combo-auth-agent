@@ -15,7 +15,7 @@ public class SWCV extends ClassVisitor {
         super(api, cv);
 
     }
-    MethodVisitor mv;
+    MethodVisitor mv = null;
 
     LoggerMain LOGGER = auth.Logger;
 
@@ -55,7 +55,7 @@ public class SWCV extends ClassVisitor {
 
     @Override
     public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
-        LOGGER.debug("    "+descriptor+" "+name);
+        LOGGER.debugRes("    "+descriptor+" "+name);
         return cv.visitField(access, name, descriptor, signature, value);
     }
 
@@ -73,8 +73,8 @@ public class SWCV extends ClassVisitor {
             ClassWriter classWriter = new ClassWriter(2);
             ClassVisitor classVisitor = new SWCV(ASM4,classWriter);
             classReader.accept(classVisitor,0);
-
-            return mv;
+            LOGGER.info((this.mv == null) +" "+ (mv == null));
+            return this.mv;
         }
         if (name.equals("KOSTblL()")){
             LOGGER.debug("found our method");
