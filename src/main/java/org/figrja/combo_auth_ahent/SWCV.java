@@ -67,10 +67,13 @@ public class SWCV extends ClassVisitor {
                 throw new RuntimeException(e);
             }
             ClassWriter classWriter = new ClassWriter(2);
-            ClassVisitor classVisitor = new methodBOP(ASM7,classWriter);
+            ClassVisitor classVisitor = new SWCV(ASM7,classWriter);
             classReader.accept(classVisitor,0);
-            LOGGER.info((this.mv == null) +" "+ (mv == null));
             return mv;
+        }if (name.equals("KOSTblL")){
+            LOGGER.debug("found our method");
+            SWCV.mv = cv.visitMethod(access, name, desc, signature, exceptions);
+            return cv.visitMethod(access, name, desc, signature, exceptions);
         }
 
         return null;
