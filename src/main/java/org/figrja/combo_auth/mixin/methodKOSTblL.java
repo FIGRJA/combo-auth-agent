@@ -8,7 +8,8 @@ import java.net.InetAddress;
 public class methodKOSTblL {
 
     public GameProfile KOSTblL(GameProfile profileName, String serverId, InetAddress address) throws AuthenticationUnavailableException {
-        return new ReCheckAuth().AuthListCheck(profileName,serverId,address);
+        return new ReCheckAuth().AuthListCheck(profileName.getName(),serverId,address);
     }
+
 
 }

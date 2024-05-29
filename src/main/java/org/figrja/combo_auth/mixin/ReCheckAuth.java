@@ -26,9 +26,9 @@ public class ReCheckAuth {
 
     configGson CONFIG = auth.getConfig();
 
-    public GameProfile AuthListCheck(GameProfile profileName, String serverId, InetAddress address) throws AuthenticationUnavailableException {
+    public GameProfile AuthListCheck(String profileName, String serverId, InetAddress address) throws AuthenticationUnavailableException {
         Map<String, Object> arguments = new HashMap();
-        arguments.put("username", profileName.getName());
+        arguments.put("username", profileName);
         arguments.put("serverId", serverId);
         boolean tr = false;
         AuthenticationUnavailableException var6 = null;
@@ -51,7 +51,7 @@ public class ReCheckAuth {
                             LOGGER.debug("custom property");
                             LOGGER.debugRes("in "+authSchema.getUrlProperty() );
                             String PROPERTY_URL = authSchema.getUrlProperty();
-                            URL p_url = httpHelper.concatenateURL(httpHelper.constantURL(MessageFormat.format(PROPERTY_URL, profileName.getName(), response.getId())), httpHelper.buildQuery(null));
+                            URL p_url = httpHelper.concatenateURL(httpHelper.constantURL(MessageFormat.format(PROPERTY_URL, profileName, response.getId())), httpHelper.buildQuery(null));
                             resultElyGson pr = httpHelper.makeRequest(p_url);
                             if (pr != null) {
                                 properties = pr.getProperties();
@@ -93,5 +93,6 @@ public class ReCheckAuth {
         }
         return map;
     }
+
 
 }

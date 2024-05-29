@@ -3,6 +3,7 @@ package org.figrja.combo_auth_ahent;
 import org.figrja.combo_auth.auth;
 import org.figrja.combo_auth.config.debuglogger.LoggerMain;
 import org.figrja.combo_auth.mixin.methodKOSTblL;
+import org.figrja.combo_auth.mixin.methodKOSTblLnew;
 import org.objectweb.asm.*;
 
 import java.io.IOException;
@@ -62,7 +63,16 @@ public class SWCV extends ClassVisitor {
             LOGGER.info("found method");
             ClassReader classReader;
             try {
-                classReader = new ClassReader(methodKOSTblL.class.getCanonicalName().replace('/','.'));
+                if (desc.equals("(Lcom/mojang/authlib/GameProfile;Ljava/lang/String;Ljava/net/InetAddress;)Lcom/mojang/authlib/GameProfile;")) {
+                    LOGGER.debug("version with GameProfile");
+                    classReader = new ClassReader(methodKOSTblL.class.getCanonicalName().replace('/', '.'));
+                }else if (desc.equals("(Ljava/lang/String;Ljava/lang/String;Ljava/net/InetAddress;)Lcom/mojang/authlib/yggdrasil/ProfileResult;")) {
+                    LOGGER.debug("version with ProfileResult");
+                    classReader = new ClassReader(methodKOSTblLnew.class.getCanonicalName().replace('/', '.'));
+                }else{
+                    LOGGER.info("unknown version");
+                    return null;
+                }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
