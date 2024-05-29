@@ -39,7 +39,7 @@ public class Premain implements ClassFileTransformer {
             try {
                 auth.onInitializeServer();
                 ClassReader classReader = new ClassReader(classfileBuffer);
-                ClassWriter classWriter = new ClassWriter(classReader,1);
+                ClassWriter classWriter = new ClassWriter(0);
                 System.out.println("SHTO");
                 ClassVisitor classVisitor = new SWCV(ASM7, classWriter);
 
