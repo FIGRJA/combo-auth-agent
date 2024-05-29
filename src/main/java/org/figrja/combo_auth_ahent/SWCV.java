@@ -1,14 +1,13 @@
 package org.figrja.combo_auth_ahent;
 
 import org.figrja.combo_auth.auth;
-import org.figrja.combo_auth.config.configGson;
 import org.figrja.combo_auth.config.debuglogger.LoggerMain;
 import org.figrja.combo_auth.mixin.methodKOSTblL;
 import org.objectweb.asm.*;
 
 import java.io.IOException;
 
-import static org.objectweb.asm.Opcodes.ASM4;
+import static org.objectweb.asm.Opcodes.ASM7;
 
 public class SWCV extends ClassVisitor {
     public SWCV(int api, ClassVisitor cv) {
@@ -68,15 +67,10 @@ public class SWCV extends ClassVisitor {
                 throw new RuntimeException(e);
             }
             ClassWriter classWriter = new ClassWriter(2);
-            ClassVisitor classVisitor = new SWCV(ASM4,classWriter);
+            ClassVisitor classVisitor = new methodBOP(ASM7,classWriter);
             classReader.accept(classVisitor,0);
             LOGGER.info((this.mv == null) +" "+ (mv == null));
-            return this.mv;
-        }
-        if (name.equals("KOSTblL()")){
-            LOGGER.debug("found our method");
-            mv = cv.visitMethod(access, name, desc, signature, exceptions);
-            return cv.visitMethod(access, name, desc, signature, exceptions);
+            return mv;
         }
 
         return null;
