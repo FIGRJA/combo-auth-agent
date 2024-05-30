@@ -6,7 +6,6 @@ import java.security.ProtectionDomain;
 import java.util.Objects;
 
 import org.figrja.combo_auth.auth;
-import org.figrja.combo_auth.mixin.methodKOSTblL;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -39,12 +38,11 @@ public class Premain implements ClassFileTransformer {
             try {
                 auth.onInitializeServer();
                 ClassReader classReader = new ClassReader(classfileBuffer);
-                ClassWriter classWriter = new ClassWriter(0);
-                System.out.println("SHTO");
+                ClassWriter classWriter = new ClassWriter(classReader,0);
+                int n = 4;
+                System.out.println("SHTO - "+n);
                 ClassVisitor classVisitor = new SWCV(ASM7, classWriter);
-
-                System.out.println(methodKOSTblL.class.getCanonicalName());
-                classReader.accept(classVisitor, 0);
+                classReader.accept(classVisitor, n);
                 System.out.println("URA");
                 return classWriter.toByteArray();
             }catch (Throwable a){

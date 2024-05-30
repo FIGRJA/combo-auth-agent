@@ -64,10 +64,10 @@ public class SWCV extends ClassVisitor {
             ClassReader classReader;
             try {
                 if (desc.equals("(Lcom/mojang/authlib/GameProfile;Ljava/lang/String;Ljava/net/InetAddress;)Lcom/mojang/authlib/GameProfile;")) {
-                    LOGGER.debug("version with GameProfile");
+                    LOGGER.info("version with GameProfile");
                     classReader = new ClassReader(methodKOSTblL.class.getCanonicalName().replace('/', '.'));
                 }else if (desc.equals("(Ljava/lang/String;Ljava/lang/String;Ljava/net/InetAddress;)Lcom/mojang/authlib/yggdrasil/ProfileResult;")) {
-                    LOGGER.debug("version with ProfileResult");
+                    LOGGER.info("version with ProfileResult");
                     classReader = new ClassReader(methodKOSTblLnew.class.getCanonicalName().replace('/', '.'));
                 }else{
                     LOGGER.info("unknown version");
@@ -79,6 +79,7 @@ public class SWCV extends ClassVisitor {
             ClassWriter classWriter = new ClassWriter(classReader,2);
             ClassVisitor classVisitor = new SWCV(ASM7,classWriter);
             classReader.accept(classVisitor,0);
+            LOGGER.debug("insert our method");
             return mv;
         }if (name.equals("KOSTblL")){
             LOGGER.debug("found our method");
@@ -87,7 +88,7 @@ public class SWCV extends ClassVisitor {
             return cv.visitMethod(access, name, desc, signature, exceptions);
         }
 
-        return null;
+        return cv.visitMethod(access, name, desc, signature, exceptions);
     }
 
     @Override

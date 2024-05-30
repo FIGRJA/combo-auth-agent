@@ -27,7 +27,6 @@ public class auth {
 
 
         File ConfFile = new File("config","combo_auth.json");
-        Logger.info(ConfFile.getAbsolutePath());
 
 
         try {
