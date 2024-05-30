@@ -2,13 +2,15 @@ package org.figrja.combo_auth_ahent;
 
 import org.figrja.combo_auth.auth;
 import org.figrja.combo_auth.config.debuglogger.LoggerMain;
-import org.figrja.combo_auth.mixin.methodKOSTblL;
-import org.figrja.combo_auth.mixin.methodKOSTblLnew;
 import org.objectweb.asm.*;
+import org.objectweb.asm.tree.*;
+import org.objectweb.asm.util.*;
 
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.PrintWriter;
+import java.util.List;
 
-import static org.objectweb.asm.Opcodes.ASM7;
 
 public class SWCV extends ClassVisitor {
     public SWCV(int api, ClassVisitor cv) {
@@ -18,6 +20,8 @@ public class SWCV extends ClassVisitor {
     public static MethodVisitor mv;
 
     LoggerMain LOGGER = auth.Logger;
+
+    static boolean twoLayer = false;
 
 
     @Override
@@ -57,39 +61,54 @@ public class SWCV extends ClassVisitor {
     }
 
     @Override
-    public MethodVisitor visitMethod(int access,String name , String desc , String signature,String[] exceptions){
-        LOGGER.debug("    "+name+desc);
-        if (name.equals("hasJoinedServer")){
+    public MethodVisitor visitMethod(int access,String name , String desc , String signature,String[] exceptions) {
+        LOGGER.debug("    " + name + desc);
+        if (name.equals("hasJoinedServer") && !twoLayer) {
             LOGGER.info("found method");
             ClassReader classReader;
             try {
                 if (desc.equals("(Lcom/mojang/authlib/GameProfile;Ljava/lang/String;Ljava/net/InetAddress;)Lcom/mojang/authlib/GameProfile;")) {
                     LOGGER.info("version with GameProfile");
                     classReader = new ClassReader(methodKOSTblL.class.getCanonicalName().replace('/', '.'));
-                }else if (desc.equals("(Ljava/lang/String;Ljava/lang/String;Ljava/net/InetAddress;)Lcom/mojang/authlib/yggdrasil/ProfileResult;")) {
+                } else if (desc.equals("(Ljava/lang/String;Ljava/lang/String;Ljava/net/InetAddress;)Lcom/mojang/authlib/yggdrasil/ProfileResult;")) {
                     LOGGER.info("version with ProfileResult");
                     classReader = new ClassReader(methodKOSTblLnew.class.getCanonicalName().replace('/', '.'));
-                }else{
+                } else {
                     LOGGER.info("unknown version");
                     return null;
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            ClassWriter classWriter = new ClassWriter(classReader,2);
-            ClassVisitor classVisitor = new SWCV(ASM7,classWriter);
-            classReader.accept(classVisitor,0);
-            LOGGER.debug("insert our method");
-            return mv;
-        }if (name.equals("KOSTblL")){
-            LOGGER.debug("found our method");
-            SWCV.mv = cv.visitMethod(access, name, desc, signature, exceptions);
-            LOGGER.debug(String.valueOf(SWCV.mv != null));
-            return cv.visitMethod(access, name, desc, signature, exceptions);
+            ClassWriter classWriter = new ClassWriter(classReader, 2);
+            ClassVisitor classVisitor = new SWCV(Opcodes.ASM9, classWriter);
+            twoLayer = true;
+            //LOGGER.debug("insert our method");
+            ClassNode classNode = new ClassNode();
+            classReader.accept(classNode, 0);
+            @SuppressWarnings("unchecked") final List<MethodNode> methods = classNode.methods;
+            for (MethodNode m : methods) {
+                InsnList inList = m.instructions;
+                System.out.println(m.name);
+                for (int i = 0; i < inList.size(); i++) {
+                    LOGGER.debugRes(insnToString(inList.get(i)));
+                }
+            }
         }
-
         return cv.visitMethod(access, name, desc, signature, exceptions);
+
     }
+
+    String insnToString(AbstractInsnNode insn){
+        insn.accept(mp);
+        StringWriter sw = new StringWriter();
+        printer.print(new PrintWriter(sw));
+        printer.getText().clear();
+        return sw.toString();
+    }
+
+    private static Printer printer = new Textifier();
+    private static TraceMethodVisitor mp = new TraceMethodVisitor(printer);
 
     @Override
     public void visitEnd() {
