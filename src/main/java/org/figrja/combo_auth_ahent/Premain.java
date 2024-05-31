@@ -21,6 +21,7 @@ import org.objectweb.asm.util.Printer;
 import org.objectweb.asm.util.Textifier;
 import org.objectweb.asm.util.TraceMethodVisitor;
 
+import static org.objectweb.asm.Opcodes.ASM7;
 import static org.objectweb.asm.Opcodes.ASM9;
 
 
@@ -53,13 +54,10 @@ public class Premain implements ClassFileTransformer {
                 LOGGER = auth.Logger;
                 ClassReader classReader = new ClassReader(classfileBuffer);
                 ClassWriter classWriter = new ClassWriter(classReader,1);
-                ClassVisitor classVisitor = new SWCV(ASM9, classWriter,classWriter);
-                printByteCode(classReader);
+                SWCV classVisitor = new SWCV(ASM7, classWriter);
                 classReader.accept(classVisitor, 0);
                 LOGGER.debug("URA");
-                byte[] _class = classWriter.toByteArray();
-                printByteCode(classReader);
-                return _class;
+                return classWriter.toByteArray();
             }catch (Throwable a){
 
                 a.printStackTrace();

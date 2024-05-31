@@ -16,9 +16,8 @@ import java.util.List;
 public class SWCV extends ClassVisitor {
 
     ClassWriter cw;
-    public SWCV(int api, ClassVisitor cv,ClassWriter cw) {
+    public SWCV(int api, ClassVisitor cv) {
         super(api, cv);
-        this.cw = cw;
     }
 
 
@@ -28,33 +27,11 @@ public class SWCV extends ClassVisitor {
 
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-        if (name.equals("com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService")) {
-            LOGGER.info("start find method");
-        }else {
-            LOGGER.debug("start find our method");
-        }
+        LOGGER.info("start find method");
+        cv.visit(version, access, name, signature, superName, interfaces);
     }
 
-    @Override
-    public void visitSource(String source, String debug) {
-    }
 
-    @Override
-    public void visitOuterClass(String owner, String name, String descriptor) {
-    }
-
-    @Override
-    public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
-        return cv.visitAnnotation(descriptor, visible);
-    }
-
-    @Override
-    public void visitAttribute(Attribute attribute) {
-    }
-
-    @Override
-    public void visitInnerClass(String name, String outerName, String innerName, int access) {
-    }
 
     @Override
     public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
@@ -65,7 +42,7 @@ public class SWCV extends ClassVisitor {
     @Override
     public MethodVisitor visitMethod(int access,String name , String desc , String signature,String[] exceptions) {
         LOGGER.debug("    " + name + desc);
-        if (name.equals("hhasJoinedServer")) {
+        if (name.equals("hasJoinedServer")) {
             LOGGER.info("found method");
             int version;
             if (desc.equals("(Lcom/mojang/authlib/GameProfile;Ljava/lang/String;Ljava/net/InetAddress;)Lcom/mojang/authlib/GameProfile;")) {
@@ -79,8 +56,7 @@ public class SWCV extends ClassVisitor {
                 return null;
             }
             LOGGER.debug("insert our method");
-            MethodVisitor method = new EXT(cv.visitMethod(access, name, desc, signature, exceptions),version);
-            return method;
+            return new EXT(cv.visitMethod(access, name, desc, signature, exceptions),version);
         }
         return cv.visitMethod(access, name, desc, signature, exceptions);
 
@@ -152,5 +128,6 @@ public class SWCV extends ClassVisitor {
     @Override
     public void visitEnd() {
         LOGGER.debug("end visit");
+        cv.visitEnd();
     }
 }
