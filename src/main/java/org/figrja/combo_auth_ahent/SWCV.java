@@ -4,18 +4,10 @@ import org.figrja.combo_auth.auth;
 import org.figrja.combo_auth.config.debuglogger.LoggerMain;
 import org.objectweb.asm.*;
 import static org.objectweb.asm.Opcodes.*;
-import org.objectweb.asm.tree.*;
-import org.objectweb.asm.util.*;
-
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.PrintWriter;
-import java.util.List;
 
 
 public class SWCV extends ClassVisitor {
 
-    ClassWriter cw;
     public SWCV(int api, ClassVisitor cv) {
         super(api, cv);
     }
@@ -98,29 +90,6 @@ public class SWCV extends ClassVisitor {
             mv.visitMaxs(1,1);
             mv.visitEnd();
         }
-    }
-
-
-
-    private void printByteCode(MethodNode MN){
-        printer = new Textifier();
-        mp = new TraceMethodVisitor(printer);
-        InsnList inList = MN.instructions;
-        for (int i = 0; i < inList.size(); i++) {
-            LOGGER.debugRes(insnToString(inList.get(i)));
-        }
-
-
-    }
-    Printer printer ;
-    TraceMethodVisitor mp;
-
-    private String insnToString(AbstractInsnNode insn){
-        insn.accept(mp);
-        StringWriter sw = new StringWriter();
-        printer.print(new PrintWriter(sw));
-        printer.getText().clear();
-        return sw.toString();
     }
 
 
