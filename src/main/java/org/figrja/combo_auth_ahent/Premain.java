@@ -11,7 +11,7 @@ import org.figrja.combo_auth.mixin.ReCheckAuth;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 
-import static org.objectweb.asm.Opcodes.ASM7;
+import static org.objectweb.asm.Opcodes.ASM9;
 
 
 public class Premain implements ClassFileTransformer {
@@ -43,7 +43,7 @@ public class Premain implements ClassFileTransformer {
                 LOGGER = org.figrja.combo_auth.auth.Logger;
                 ClassReader classReader = new ClassReader(classfileBuffer);
                 ClassWriter classWriter = new ClassWriter(classReader,1);
-                SWCV classVisitor = new SWCV(ASM7, classWriter);
+                SWCV classVisitor = new SWCV(ASM9, classWriter);
                 classReader.accept(classVisitor, 0);
                 LOGGER.debug("URA");
                 return classWriter.toByteArray();

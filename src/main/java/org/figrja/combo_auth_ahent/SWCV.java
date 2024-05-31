@@ -75,16 +75,15 @@ public class SWCV extends ClassVisitor {
             }
             mv.visitTypeInsn(NEW,"org/figrja/combo_auth/mixin/ReCheckAuth");
             mv.visitInsn(DUP);
-            mv.visitMethodInsn(INVOKESPECIAL,"org/figrja/combo_auth/mixin/ReCheckAuth","<init>","()V");
+            mv.visitMethodInsn(INVOKESPECIAL, "org/figrja/combo_auth/mixin/ReCheckAuth", "<init>", "()V");
             mv.visitVarInsn(ALOAD,1);
             if (version == 0) {
                 mv.visitMethodInsn(INVOKEVIRTUAL, "com/mojang/authlib/GameProfile", "getName", "()Ljava/lang/String;");
             }
             mv.visitVarInsn(ALOAD,2);
-            mv.visitVarInsn(ALOAD,3);
-            mv.visitMethodInsn(INVOKEVIRTUAL ,"org/figrja/combo_auth/mixin/ReCheckAuth","AuthListCheck", "(Ljava/lang/String;Ljava/lang/String;Ljava/net/InetAddress;)Lcom/mojang/authlib/GameProfile;");
+            mv.visitMethodInsn(INVOKEVIRTUAL, "org/figrja/combo_auth/mixin/ReCheckAuth", "AuthListCheck", "(Ljava/lang/String;Ljava/lang/String;)Lcom/mojang/authlib/GameProfile;");
             if (version == 1){
-                mv.visitMethodInsn(INVOKEVIRTUAL ,"com/mojang/authlib/yggdrasil/ProfileResult","<init>", "(Lcom/mojang/authlib/GameProfile;)V");
+                mv.visitMethodInsn(INVOKEVIRTUAL, "com/mojang/authlib/yggdrasil/ProfileResult", "<init>", "(Lcom/mojang/authlib/GameProfile;)V");
             }
             mv.visitInsn(ARETURN);
             mv.visitMaxs(1,1);

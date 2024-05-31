@@ -26,7 +26,7 @@ public class ReCheckAuth {
 
     configGson CONFIG = auth.getConfig();
 
-    public GameProfile AuthListCheck(String profileName, String serverId, InetAddress address) throws AuthenticationUnavailableException {
+    public GameProfile AuthListCheck(String profileName, String serverId) throws AuthenticationUnavailableException {
         Map<String, Object> arguments = new HashMap();
         arguments.put("username", profileName);
         arguments.put("serverId", serverId);
