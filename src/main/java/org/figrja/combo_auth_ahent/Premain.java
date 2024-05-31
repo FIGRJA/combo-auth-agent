@@ -51,12 +51,12 @@ public class Premain implements ClassFileTransformer {
                 a.printStackTrace();
             }
 
-        } else if (className.equals("com/mojang/authlib/exceptions/AuthenticationUnavailableException")) {
+        } else if (className.equals("org/figrja/combo_auth/auth")) {
             LOGGER.info("low");
             try {
-                loader.loadClass(ReCheckAuth.class.getCanonicalName().replace('/','.'));
+                loader.loadClass(ReCheckAuth.class.getCanonicalName().replace('.','/'));
             } catch (ClassNotFoundException e) {
-                LOGGER.info("(");
+                LOGGER.info(ReCheckAuth.class.getCanonicalName());
                 throw new RuntimeException(e);
             }
         }
