@@ -1,4 +1,4 @@
-package org.figrja.combo_auth.mixin;
+package org.figrja.combo_auth;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationUnavailableException;

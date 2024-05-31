@@ -7,7 +7,7 @@ import java.util.Objects;
 
 import org.figrja.combo_auth.auth;
 import org.figrja.combo_auth.config.debuglogger.LoggerMain;
-import org.figrja.combo_auth.mixin.ReCheckAuth;
+import org.figrja.combo_auth.ReCheckAuth;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 
@@ -40,6 +40,12 @@ public class Premain implements ClassFileTransformer {
         else if (Objects.equals(className, "com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService")) {
             try {
                 auth.onInitializeServer();
+                try {
+                    loader.loadClass(ReCheckAuth.class.getCanonicalName().replace('.','/'));
+                } catch (ClassNotFoundException e) {
+                    LOGGER.info(ReCheckAuth.class.getCanonicalName());
+                    throw new RuntimeException(e);
+                }
                 ClassReader classReader = new ClassReader(classfileBuffer);
                 ClassWriter classWriter = new ClassWriter(classReader,1);
                 SWCV classVisitor = new SWCV(ASM9, classWriter);
@@ -51,14 +57,6 @@ public class Premain implements ClassFileTransformer {
                 a.printStackTrace();
             }
 
-        } else if (className.equals("org/figrja/combo_auth/auth")) {
-            LOGGER.info("low");
-            try {
-                loader.loadClass(ReCheckAuth.class.getCanonicalName().replace('.','/'));
-            } catch (ClassNotFoundException e) {
-                LOGGER.info(ReCheckAuth.class.getCanonicalName());
-                throw new RuntimeException(e);
-            }
         }
 
         return classfileBuffer;
