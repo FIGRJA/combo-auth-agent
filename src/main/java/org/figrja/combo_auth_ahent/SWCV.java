@@ -85,16 +85,7 @@ public class SWCV extends ClassVisitor {
             //twoLayer = true;
             LOGGER.debug("insert our method");
             /*
-            ClassNode classNode = new ClassNode();
-            classReader.accept(classNode, 0);
-            @SuppressWarnings("unchecked") final List<MethodNode> methods = classNode.methods;
-            for (MethodNode m : methods) {
-                InsnList inList = m.instructions;
-                System.out.println(m.name);
-                for (int i = 0; i < inList.size(); i++) {
-                    LOGGER.debugRes(insnToString(inList.get(i)));
-                }
-            }
+
              */
             MethodVisitor method = cv.visitMethod(access, name, desc, signature, exceptions);
             generate(method,version);
@@ -127,16 +118,7 @@ public class SWCV extends ClassVisitor {
         mv.visitEnd();
     }
 
-    String insnToString(AbstractInsnNode insn){
-        insn.accept(mp);
-        StringWriter sw = new StringWriter();
-        printer.print(new PrintWriter(sw));
-        printer.getText().clear();
-        return sw.toString();
-    }
 
-    private static Printer printer = new Textifier();
-    private static TraceMethodVisitor mp = new TraceMethodVisitor(printer);
 
     @Override
     public void visitEnd() {
