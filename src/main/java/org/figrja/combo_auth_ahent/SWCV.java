@@ -14,15 +14,16 @@ import java.util.List;
 
 
 public class SWCV extends ClassVisitor {
-    public SWCV(int api, ClassVisitor cv) {
-        super(api, cv);
 
+    ClassWriter cw;
+    public SWCV(int api, ClassVisitor cv,ClassWriter cw) {
+        super(api, cv);
+        this.cw = cw;
     }
 
 
     LoggerMain LOGGER = auth.Logger;
 
-    static boolean twoLayer = false;
 
 
     @Override
@@ -64,61 +65,66 @@ public class SWCV extends ClassVisitor {
     @Override
     public MethodVisitor visitMethod(int access,String name , String desc , String signature,String[] exceptions) {
         LOGGER.debug("    " + name + desc);
-        if (name.equals("hasJoinedServer")) {
+        if (name.equals("hhasJoinedServer")) {
             LOGGER.info("found method");
-            //ClassReader classReader;
             int version;
             if (desc.equals("(Lcom/mojang/authlib/GameProfile;Ljava/lang/String;Ljava/net/InetAddress;)Lcom/mojang/authlib/GameProfile;")) {
                 LOGGER.info("version with GameProfile");
-                //classReader = new ClassReader(methodKOSTblL.class.getCanonicalName().replace('/', '.'));
                 version = 0;
             } else if (desc.equals("(Ljava/lang/String;Ljava/lang/String;Ljava/net/InetAddress;)Lcom/mojang/authlib/yggdrasil/ProfileResult;")) {
                 LOGGER.info("version with ProfileResult");
-                //classReader = new ClassReader(methodKOSTblLnew.class.getCanonicalName().replace('/', '.'));
                 version = 1;
             } else {
                 LOGGER.info("unknown version");
                 return null;
             }
-            //ClassWriter classWriter = new ClassWriter(classReader, 0);
-            //ClassVisitor classVisitor = new SWCV(ASM9, classWriter);
-            //twoLayer = true;
             LOGGER.debug("insert our method");
-            /*
-
-             */
-            MethodVisitor method = cv.visitMethod(access, name, desc, signature, exceptions);
-            generate(method,version);
+            MethodVisitor method = new EXT(cv.visitMethod(access, name, desc, signature, exceptions),version);
             return method;
         }
         return cv.visitMethod(access, name, desc, signature, exceptions);
 
     }
 
-    void generate(MethodVisitor mv,int version){
-        mv.visitCode();
-        Label l1 = new Label();
-        mv.visitLabel(l1);
-        if (version == 1) {
-            mv.visitTypeInsn(NEW, "com/mojang/authlib/yggdrasil/ProfileResult");
+    public static class EXT extends MethodVisitor{
+        int version;
+        MethodVisitor mv;
+        public EXT(MethodVisitor mv,int version){
+            super(ASM9,null);
+            this.version = version;
+            this.mv = mv;
+
+        }
+
+        @Override
+        public void visitCode(){
+            mv.visitCode();
+            Label l1 = new Label();
+            mv.visitLabel(l1);
+            if (version == 1) {
+                mv.visitTypeInsn(NEW, "com/mojang/authlib/yggdrasil/ProfileResult");
+                mv.visitInsn(DUP);
+            }
+            mv.visitTypeInsn(NEW,"org/figrja/combo_auth/mixin/ReCheckAuth");
             mv.visitInsn(DUP);
+            mv.visitMethodInsn(INVOKESPECIAL,"org/figrja/combo_auth/mixin/ReCheckAuth","<init>","()V");
+            mv.visitVarInsn(ALOAD,1);
+            if (version == 0) {
+                mv.visitMethodInsn(INVOKEVIRTUAL, "com/mojang/authlib/GameProfile", "getName", "()Ljava/lang/String;");
+            }
+            mv.visitVarInsn(ALOAD,2);
+            mv.visitVarInsn(ALOAD,3);
+            mv.visitMethodInsn(INVOKEVIRTUAL ,"org/figrja/combo_auth/mixin/ReCheckAuth","AuthListCheck", "(Ljava/lang/String;Ljava/lang/String;Ljava/net/InetAddress;)Lcom/mojang/authlib/GameProfile;");
+            if (version == 1){
+                mv.visitMethodInsn(INVOKEVIRTUAL ,"com/mojang/authlib/yggdrasil/ProfileResult","<init>", "(Lcom/mojang/authlib/GameProfile;)V");
+            }
+            mv.visitInsn(ARETURN);
+            mv.visitMaxs(1,1);
+            mv.visitEnd();
         }
-        mv.visitTypeInsn(NEW,"org/figrja/combo_auth/mixin/ReCheckAuth");
-        mv.visitInsn(DUP);
-        mv.visitMethodInsn(INVOKESPECIAL,"org/figrja/combo_auth/mixin/ReCheckAuth","<init>","()V");
-        mv.visitVarInsn(ALOAD,1);
-        if (version == 0) {
-            mv.visitMethodInsn(INVOKEVIRTUAL, "com/mojang/authlib/GameProfile", "getName", "()Ljava/lang/String;");
-        }
-        mv.visitVarInsn(ALOAD,2);
-        mv.visitVarInsn(ALOAD,3);
-        mv.visitMethodInsn(INVOKEVIRTUAL ,"org/figrja/combo_auth/mixin/ReCheckAuth","AuthListCheck", "(Ljava/lang/String;Ljava/lang/String;Ljava/net/InetAddress;)Lcom/mojang/authlib/GameProfile;");
-        if (version == 1){
-            mv.visitMethodInsn(INVOKEVIRTUAL ,"com/mojang/authlib/yggdrasil/ProfileResult","<init>", "(Lcom/mojang/authlib/GameProfile;)V");
-        }
-        mv.visitInsn(ARETURN);
-        mv.visitEnd();
     }
+
+
 
     private void printByteCode(MethodNode MN){
         printer = new Textifier();

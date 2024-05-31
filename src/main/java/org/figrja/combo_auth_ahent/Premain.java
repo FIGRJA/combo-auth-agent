@@ -52,13 +52,12 @@ public class Premain implements ClassFileTransformer {
                 auth.onInitializeServer();
                 LOGGER = auth.Logger;
                 ClassReader classReader = new ClassReader(classfileBuffer);
-                ClassWriter classWriter = new ClassWriter(classReader,2);
-                ClassVisitor classVisitor = new SWCV(ASM9, classWriter);
+                ClassWriter classWriter = new ClassWriter(classReader,1);
+                ClassVisitor classVisitor = new SWCV(ASM9, classWriter,classWriter);
                 printByteCode(classReader);
                 classReader.accept(classVisitor, 0);
                 LOGGER.debug("URA");
                 byte[] _class = classWriter.toByteArray();
-                classReader = new ClassReader(_class);
                 printByteCode(classReader);
                 return _class;
             }catch (Throwable a){
