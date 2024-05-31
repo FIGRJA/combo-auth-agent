@@ -18,11 +18,10 @@ public class auth {
     private static configGson config;
     private final Gson gson = new Gson();
 
-    public static LoggerMain Logger;
+    public static LoggerMain Logger = new Logger("combo_auth");;
 
 
     public void onInitializeServer() {
-        Logger = new Logger("combo_auth");
         Logger.info("start loading config");
 
 

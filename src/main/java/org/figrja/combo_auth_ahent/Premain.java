@@ -16,7 +16,7 @@ import static org.objectweb.asm.Opcodes.ASM9;
 
 public class Premain implements ClassFileTransformer {
 
-    static LoggerMain LOGGER;
+    static LoggerMain LOGGER = org.figrja.combo_auth.auth.Logger;
 
     static auth auth = new auth();
     public static void premain(String args, Instrumentation inst){
@@ -40,7 +40,7 @@ public class Premain implements ClassFileTransformer {
         else if (Objects.equals(className, "com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService")) {
             try {
                 auth.onInitializeServer();
-                LOGGER = org.figrja.combo_auth.auth.Logger;
+                new ReCheckAuth();
                 ClassReader classReader = new ClassReader(classfileBuffer);
                 ClassWriter classWriter = new ClassWriter(classReader,1);
                 SWCV classVisitor = new SWCV(ASM9, classWriter);
@@ -52,8 +52,6 @@ public class Premain implements ClassFileTransformer {
                 a.printStackTrace();
             }
 
-        } else if (className.equals("com/mojang/authlib/exceptions/AuthenticationUnavailableException")) {
-            new ReCheckAuth();
         }
 
         return classfileBuffer;

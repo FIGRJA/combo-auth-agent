@@ -1,11 +1,9 @@
 package org.figrja.combo_auth.mixin;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
-import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 import org.figrja.combo_auth.auth;
 import org.figrja.combo_auth.config.AuthSchemaList;
 import org.figrja.combo_auth.config.configGson;
