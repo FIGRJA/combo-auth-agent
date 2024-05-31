@@ -7,7 +7,7 @@ import java.util.Objects;
 
 import org.figrja.combo_auth.auth;
 import org.figrja.combo_auth.config.debuglogger.LoggerMain;
-import org.figrja.combo_auth.ReCheckAuth;
+import org.figrja.combo_auth.checkauth;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 
@@ -41,9 +41,9 @@ public class Premain implements ClassFileTransformer {
             try {
                 auth.onInitializeServer();
                 try {
-                    loader.loadClass(ReCheckAuth.class.getCanonicalName().replace('.','/'));
+                    loader.loadClass(checkauth.class.getCanonicalName());
                 } catch (ClassNotFoundException e) {
-                    LOGGER.info(ReCheckAuth.class.getCanonicalName());
+                    LOGGER.info(checkauth.class.getCanonicalName());
                     throw new RuntimeException(e);
                 }
                 ClassReader classReader = new ClassReader(classfileBuffer);

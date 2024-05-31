@@ -4,7 +4,6 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
-import org.figrja.combo_auth.auth;
 import org.figrja.combo_auth.config.AuthSchemaList;
 import org.figrja.combo_auth.config.configGson;
 import org.figrja.combo_auth.config.debuglogger.LoggerMain;
@@ -12,13 +11,12 @@ import org.figrja.combo_auth.config.pro;
 import org.figrja.combo_auth.ely.by.httpHelper;
 import org.figrja.combo_auth.ely.by.resultElyGson;
 
-import java.net.InetAddress;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ReCheckAuth {
+public class checkauth {
 
     LoggerMain LOGGER = auth.Logger;
 
