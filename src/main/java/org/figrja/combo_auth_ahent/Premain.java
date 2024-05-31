@@ -40,7 +40,6 @@ public class Premain implements ClassFileTransformer {
         else if (Objects.equals(className, "com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService")) {
             try {
                 auth.onInitializeServer();
-                new ReCheckAuth();
                 ClassReader classReader = new ClassReader(classfileBuffer);
                 ClassWriter classWriter = new ClassWriter(classReader,1);
                 SWCV classVisitor = new SWCV(ASM9, classWriter);
@@ -52,6 +51,14 @@ public class Premain implements ClassFileTransformer {
                 a.printStackTrace();
             }
 
+        } else if (className.equals("com/mojang/authlib/exceptions/AuthenticationUnavailableException")) {
+            LOGGER.info("low");
+            try {
+                loader.loadClass(ReCheckAuth.class.getCanonicalName().replace('/','.'));
+            } catch (ClassNotFoundException e) {
+                LOGGER.info("(");
+                throw new RuntimeException(e);
+            }
         }
 
         return classfileBuffer;
