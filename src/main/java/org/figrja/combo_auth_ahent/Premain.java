@@ -52,13 +52,15 @@ public class Premain implements ClassFileTransformer {
                 auth.onInitializeServer();
                 LOGGER = auth.Logger;
                 ClassReader classReader = new ClassReader(classfileBuffer);
-                ClassWriter classWriter = new ClassWriter(classReader,0);
+                ClassWriter classWriter = new ClassWriter(classReader,2);
                 ClassVisitor classVisitor = new SWCV(ASM9, classWriter);
                 printByteCode(classReader);
                 classReader.accept(classVisitor, 0);
                 LOGGER.debug("URA");
+                byte[] _class = classWriter.toByteArray();
+                classReader = new ClassReader(_class);
                 printByteCode(classReader);
-                return classWriter.toByteArray();
+                return _class;
             }catch (Throwable a){
 
                 a.printStackTrace();
@@ -72,15 +74,20 @@ public class Premain implements ClassFileTransformer {
     private void printByteCode(ClassReader classReader){
         ClassNode classNode = new ClassNode();
         classReader.accept(classNode, 0);
+        printer = new Textifier();
+        mp = new TraceMethodVisitor(printer);
         @SuppressWarnings("unchecked") final List<MethodNode> methods = classNode.methods;
         for (MethodNode m : methods) {
             InsnList inList = m.instructions;
-            LOGGER.debug(m.name);
-            for (int i = 0; i < inList.size(); i++) {
-                LOGGER.debugRes(insnToString(inList.get(i)));
+            if (m.name.equals("hasJoinedServer")) {
+                for (int i = 0; i < inList.size(); i++) {
+                    LOGGER.debugRes(insnToString(inList.get(i)));
+                }
             }
         }
     }
+    Printer printer ;
+    TraceMethodVisitor mp;
 
     private String insnToString(AbstractInsnNode insn){
         insn.accept(mp);
@@ -90,8 +97,7 @@ public class Premain implements ClassFileTransformer {
         return sw.toString();
     }
 
-    private static Printer printer = new Textifier();
-    private static TraceMethodVisitor mp = new TraceMethodVisitor(printer);
+
 
 
 

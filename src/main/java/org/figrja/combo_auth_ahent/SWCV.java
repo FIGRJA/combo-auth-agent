@@ -64,7 +64,7 @@ public class SWCV extends ClassVisitor {
     @Override
     public MethodVisitor visitMethod(int access,String name , String desc , String signature,String[] exceptions) {
         LOGGER.debug("    " + name + desc);
-        if (name.equals("hasJoinedServer") && !twoLayer) {
+        if (name.equals("hasJoinedServer")) {
             LOGGER.info("found method");
             //ClassReader classReader;
             int version;
@@ -97,6 +97,8 @@ public class SWCV extends ClassVisitor {
 
     void generate(MethodVisitor mv,int version){
         mv.visitCode();
+        Label l1 = new Label();
+        mv.visitLabel(l1);
         if (version == 1) {
             mv.visitTypeInsn(NEW, "com/mojang/authlib/yggdrasil/ProfileResult");
             mv.visitInsn(DUP);
@@ -116,6 +118,27 @@ public class SWCV extends ClassVisitor {
         }
         mv.visitInsn(ARETURN);
         mv.visitEnd();
+    }
+
+    private void printByteCode(MethodNode MN){
+        printer = new Textifier();
+        mp = new TraceMethodVisitor(printer);
+        InsnList inList = MN.instructions;
+        for (int i = 0; i < inList.size(); i++) {
+            LOGGER.debugRes(insnToString(inList.get(i)));
+        }
+
+
+    }
+    Printer printer ;
+    TraceMethodVisitor mp;
+
+    private String insnToString(AbstractInsnNode insn){
+        insn.accept(mp);
+        StringWriter sw = new StringWriter();
+        printer.print(new PrintWriter(sw));
+        printer.getText().clear();
+        return sw.toString();
     }
 
 
