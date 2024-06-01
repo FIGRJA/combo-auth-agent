@@ -1,4 +1,4 @@
-package org.figrja.combo_auth.ely.by;
+package org.figrja.combo_auth_ahent.ely.by;
 
 import com.google.gson.annotations.SerializedName;
 

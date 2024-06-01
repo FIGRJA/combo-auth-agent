@@ -1,20 +1,21 @@
-package org.figrja.combo_auth;
+package org.figrja.combo_auth_ahent;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
+import org.figrja.combo_auth_ahent.config.AuthSchemaList;
+import org.figrja.combo_auth_ahent.config.configGson;
+import org.figrja.combo_auth_ahent.config.debuglogger.LoggerMain;
+import org.figrja.combo_auth_ahent.ely.by.httpHelper;
+import org.figrja.combo_auth_ahent.ely.by.propery;
+import org.figrja.combo_auth_ahent.ely.by.resultElyGson;
+
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import org.figrja.combo_auth.config.AuthSchemaList;
-import org.figrja.combo_auth.config.configGson;
-import org.figrja.combo_auth.config.debuglogger.LoggerMain;
-import org.figrja.combo_auth.ely.by.httpHelper;
-import org.figrja.combo_auth.ely.by.propery;
-import org.figrja.combo_auth.ely.by.resultElyGson;
 
 public class checkauth {
     LoggerMain LOGGER;

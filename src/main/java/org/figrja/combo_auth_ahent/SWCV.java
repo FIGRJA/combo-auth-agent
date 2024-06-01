@@ -1,7 +1,6 @@
 package org.figrja.combo_auth_ahent;
 
-import org.figrja.combo_auth.auth;
-import org.figrja.combo_auth.config.debuglogger.LoggerMain;
+import org.figrja.combo_auth_ahent.config.debuglogger.LoggerMain;
 import org.objectweb.asm.*;
 import static org.objectweb.asm.Opcodes.*;
 
@@ -75,13 +74,13 @@ public class SWCV extends ClassVisitor {
             }
             mv.visitTypeInsn(NEW,"org/figrja/combo_auth_ahent/checkauth");
             mv.visitInsn(DUP);
-            mv.visitMethodInsn(INVOKESPECIAL, "org/figrja/combo_auth/checkauth", "<init>", "()V");
+            mv.visitMethodInsn(INVOKESPECIAL, "org/figrja/combo_auth_ahent/checkauth", "<init>", "()V");
             mv.visitVarInsn(ALOAD,1);
             if (version == 0) {
                 mv.visitMethodInsn(INVOKEVIRTUAL, "com/mojang/authlib/GameProfile", "getName", "()Ljava/lang/String;");
             }
             mv.visitVarInsn(ALOAD,2);
-            mv.visitMethodInsn(INVOKEVIRTUAL, "org/figrja/combo_auth/checkauth", "AuthListCheck", "(Ljava/lang/String;Ljava/lang/String;)Lcom/mojang/authlib/GameProfile;");
+            mv.visitMethodInsn(INVOKEVIRTUAL, "org/figrja/combo_auth_ahent/checkauth", "AuthListCheck", "(Ljava/lang/String;Ljava/lang/String;)Lcom/mojang/authlib/GameProfile;");
             if (version == 1){
                 mv.visitMethodInsn(INVOKEVIRTUAL, "com/mojang/authlib/yggdrasil/ProfileResult", "<init>", "(Lcom/mojang/authlib/GameProfile;)V");
             }

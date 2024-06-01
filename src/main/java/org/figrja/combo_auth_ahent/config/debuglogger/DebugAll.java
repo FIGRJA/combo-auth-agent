@@ -1,4 +1,4 @@
-package org.figrja.combo_auth.config.debuglogger;
+package org.figrja.combo_auth_ahent.config.debuglogger;
 
 public class DebugAll extends LoggerMain {
     private final String name;

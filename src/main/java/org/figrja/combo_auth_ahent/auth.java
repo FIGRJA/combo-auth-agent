@@ -1,21 +1,15 @@
-package org.figrja.combo_auth;
+package org.figrja.combo_auth_ahent;
 
 import com.google.gson.Gson;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import org.figrja.combo_auth_ahent.config.configGson;
+import org.figrja.combo_auth_ahent.config.debuglogger.Debug;
+import org.figrja.combo_auth_ahent.config.debuglogger.DebugAll;
+import org.figrja.combo_auth_ahent.config.debuglogger.Logger;
+import org.figrja.combo_auth_ahent.config.debuglogger.LoggerMain;
+
+import java.io.*;
 import java.nio.file.Files;
 import java.util.Scanner;
-import org.figrja.combo_auth.config.configGson;
-import org.figrja.combo_auth.config.debuglogger.Debug;
-import org.figrja.combo_auth.config.debuglogger.DebugAll;
-import org.figrja.combo_auth.config.debuglogger.Logger;
-import org.figrja.combo_auth.config.debuglogger.LoggerMain;
 
 public class auth {
     private static configGson config;
@@ -68,14 +62,14 @@ public class auth {
     private void defaultConf(File ConfFile) throws IOException {
         Logger.info("create new config");
         Files.createFile(ConfFile.toPath());
-        InputStream inputStream = auth.class.getClassLoader().getResourceAsStream("combo_auth.json");
+        InputStream inputStream = org.figrja.combo_auth_ahent.auth.class.getClassLoader().getResourceAsStream("combo_auth.json");
         if (inputStream != null) {
             config = (configGson)this.gson.fromJson(new BufferedReader(new InputStreamReader(inputStream)), configGson.class);
         } else {
             Logger.info("wtf inputStream of config in jar is null");
         }
 
-        inputStream = auth.class.getClassLoader().getResourceAsStream("combo_auth.json");
+        inputStream = org.figrja.combo_auth_ahent.auth.class.getClassLoader().getResourceAsStream("combo_auth.json");
         if (inputStream != null) {
             PrintWriter printWriter = new PrintWriter(ConfFile);
             Scanner scanner = new Scanner(inputStream);

@@ -1,7 +1,6 @@
 package org.figrja.combo_auth_ahent;
 
-import org.figrja.combo_auth.config.debuglogger.LoggerMain;
-import org.figrja.combo_auth.auth;
+import org.figrja.combo_auth_ahent.config.debuglogger.LoggerMain;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 
@@ -12,7 +11,7 @@ import java.util.Objects;
 import static org.objectweb.asm.Opcodes.ASM9;
 
 public class ClassTransformer implements ClassFileTransformer {
-    static LoggerMain LOGGER = org.figrja.combo_auth.auth.Logger;
+    static LoggerMain LOGGER = org.figrja.combo_auth_ahent.auth.Logger;
 
     static auth auth = new auth();
 

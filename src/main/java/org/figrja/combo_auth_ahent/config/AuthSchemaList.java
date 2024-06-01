@@ -1,7 +1,7 @@
-package org.figrja.combo_auth.config;
+package org.figrja.combo_auth_ahent.config;
 
 import com.google.gson.annotations.SerializedName;
-import org.figrja.combo_auth.ely.by.propery;
+import org.figrja.combo_auth_ahent.ely.by.propery;
 
 public class AuthSchemaList {
     private String url_check;
