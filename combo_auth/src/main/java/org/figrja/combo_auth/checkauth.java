@@ -11,9 +11,9 @@ import java.util.Iterator;
 import java.util.Map;
 import org.figrja.combo_auth.config.AuthSchemaList;
 import org.figrja.combo_auth.config.configGson;
-import org.figrja.combo_auth.config.pro;
 import org.figrja.combo_auth.config.debuglogger.LoggerMain;
 import org.figrja.combo_auth.ely.by.httpHelper;
+import org.figrja.combo_auth.ely.by.propery;
 import org.figrja.combo_auth.ely.by.resultElyGson;
 
 public class checkauth {
@@ -90,13 +90,13 @@ public class checkauth {
         }
     }
 
-    public PropertyMap getProperty(pro[] AddProperty) {
+    public PropertyMap getProperty(propery[] AddProperty) {
         PropertyMap map = new PropertyMap();
-        pro[] var3 = AddProperty;
+        propery[] var3 = AddProperty;
         int var4 = AddProperty.length;
 
         for(int var5 = 0; var5 < var4; ++var5) {
-            pro p = var3[var5];
+            propery p = var3[var5];
             if (p.signature() != null) {
                 map.put(p.name(), new Property(p.name(), p.value(), p.signature()));
             } else {

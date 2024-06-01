@@ -20,7 +20,7 @@ import org.figrja.combo_auth.config.debuglogger.LoggerMain;
 public class auth {
     private static configGson config;
     private final Gson gson = new Gson();
-    public static LoggerMain Logger = new Logger("combo_auth");
+    public static LoggerMain Logger = new Logger();
 
     public auth() {
     }
@@ -49,11 +49,11 @@ public class auth {
         if (config.getGebugStatus() != null) {
             Logger.info(config.getGebugStatus());
             if (config.getGebugStatus().equals("detail")) {
-                Logger = new Debug("combo_auth");
+                Logger = new Debug();
             }
 
             if (config.getGebugStatus().equals("all")) {
-                Logger = new DebugAll("combo_auth");
+                Logger = new DebugAll();
             }
         }
 

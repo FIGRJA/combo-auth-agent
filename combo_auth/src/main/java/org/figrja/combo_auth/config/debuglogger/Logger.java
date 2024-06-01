@@ -1,10 +1,10 @@
 package org.figrja.combo_auth.config.debuglogger;
 
 public class Logger extends LoggerMain {
-    private final String name;
+    private String name;
 
-    public Logger(String name) {
-        this.name = name;
+    public Logger() {
+        super();
     }
 
     public void info(String mes) {

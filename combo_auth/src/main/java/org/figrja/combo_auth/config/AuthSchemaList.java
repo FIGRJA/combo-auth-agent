@@ -1,17 +1,18 @@
 package org.figrja.combo_auth.config;
 
 import com.google.gson.annotations.SerializedName;
+import org.figrja.combo_auth.ely.by.propery;
 
 public class AuthSchemaList {
     private String url_check;
     private String url_property;
-    private pro[] AddProperty;
+    private propery[] AddProperty;
 
     public AuthSchemaList() {
     }
 
     @SerializedName("AddProperty")
-    public pro[] getAddProperty() {
+    public propery[] getAddProperty() {
         return this.AddProperty;
     }
 
