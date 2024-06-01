@@ -1,5 +1,7 @@
 package org.figrja.combo_auth_ahent;
 
+import jdk.internal.loader.Loader;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,7 +9,6 @@ public class ByteClassLoader extends ClassLoader {
     private final Map<String, byte[]> extraClassDefs;
 
     public ByteClassLoader( Map<String, byte[]> extraClassDefs) {
-        super();
         this.extraClassDefs = extraClassDefs;
     }
 

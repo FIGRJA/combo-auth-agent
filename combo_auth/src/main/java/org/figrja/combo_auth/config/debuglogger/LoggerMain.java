@@ -1,7 +1,6 @@
 package org.figrja.combo_auth.config.debuglogger;
 
 public abstract class LoggerMain {
-    private String name = "combo-auth";
     public LoggerMain() {
     }
 

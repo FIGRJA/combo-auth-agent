@@ -41,7 +41,10 @@ public class Premain implements ClassFileTransformer {
                         String s = e.getName().substring(0, e.getName().length() - 6).replace('/','.');
                         switch (s) {
                             case "org.figrja.combo_auth.auth":
-                            case "org.figrja.combo_auth.config.pro":
+                            case "org.figrja.combo_auth.checkauth":
+                            case "org.figrja.combo_auth.ely.by.resultElyGson":
+                            case "org.figrja.combo_auth.ely.by.propery":
+                            case "org.figrja.combo_auth.ely.by.httpHelper":
                             case "org.figrja.combo_auth.config.configGson":
                             case "org.figrja.combo_auth.config.AuthSchemaList":
                             case "org.figrja.combo_auth.config.debuglogger.LoggerMain":
@@ -55,13 +58,16 @@ public class Premain implements ClassFileTransformer {
                 }
             }
             ByteClassLoader loader = new ByteClassLoader( map);
-            String s = "org.figrja.combo_auth.auth";
-            Class<?> aClass = loader.findClass(s);
-            Constructor constructors = aClass.getConstructor();
-            Object o = constructors.newInstance();
-            Method method = aClass.getMethod("onInitializeServer");
-            method.invoke(o);
-            System.out.println("loadded");
+
+            for(String s :map.keySet()) {
+                Class<?> aClass = loader.loadClass(s);
+                /*
+                Constructor constructors = aClass.getConstructor();
+                Object o = constructors.newInstance();
+                Method method = aClass.getMethod("onInitializeServer");
+                method.invoke(o);
+                 */
+            }
 
         } catch (Throwable e) {
             System.out.println("lol");

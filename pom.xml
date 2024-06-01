@@ -50,7 +50,7 @@
             <groupId>org.figrja</groupId>
             <artifactId>combo-auth</artifactId>
             <version>1.0</version>
-            <systemPath>${basedir}/combo_auth/target/combo-auth-1.0.jar</systemPath>
+            <systemPath>${basedir}/src/main/resources/combo-auth-1.0.jar</systemPath>
             <scope>system</scope>
         </dependency>
     </dependencies>

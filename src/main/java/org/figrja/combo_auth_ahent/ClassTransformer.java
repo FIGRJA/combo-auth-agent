@@ -48,44 +48,6 @@ public class ClassTransformer implements ClassFileTransformer {
                 SWCV classVisitor = new SWCV(ASM9, classWriter);
                 classReader.accept(classVisitor, 0);
                 LOGGER.debug("URA");
-                Map<String,byte[]> map = new HashMap<>();
-                try {
-                    InputStream resourceAsStream = Premain.class.getClassLoader().getResourceAsStream("combo-auth-1.0.jar");
-                    JarInputStream jarFile = null;
-                    if (resourceAsStream != null) {
-                        jarFile = new JarInputStream(resourceAsStream);
-                    }else {
-                        System.out.println("lol");
-                    }
-                    JarEntry e;
-                    while (true){
-                        e = jarFile.getNextJarEntry();
-                        if (e == null){
-                            break;
-                        }
-                        if (e.getName().endsWith(".class")) {
-                            switch (e.getName().substring(0, e.getName().length() - 6)) {
-                                case "org.figrja.combo_auth.ely.by.httpHelper":
-                                case "org.figrja.combo_auth.ely.by.propery":
-                                case "org.figrja.combo_auth.ely.by.resultElyGson":
-                                case "org.figrja.combo_auth.checkauth":
-                                    map.put(e.getName().substring(0, e.getName().length() - 6), e.getExtra());
-                            }
-                        }
-                    }
-                    ByteClassLoader loader_ = new ByteClassLoader( map);
-                    for (String s:map.keySet()){
-                        Class<?> aClass = loader_.loadClass(s);
-                        Constructor constructors = aClass.getConstructor();
-                        Object o = constructors.newInstance();
-                        Method method = aClass.getMethod("<init>");
-                        method.invoke(o);
-                    }
-                } catch (Throwable e) {
-                    System.out.println("lol");
-                    e.printStackTrace();
-                    throw new RuntimeException(e);
-                }
                 return classWriter.toByteArray();
             }catch (Throwable a){
 
