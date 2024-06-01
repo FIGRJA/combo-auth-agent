@@ -1,23 +1,13 @@
 package org.figrja.combo_auth_ahent;
 
-import org.figrja.combo_auth.checkauth;
 import org.figrja.combo_auth.config.debuglogger.LoggerMain;
 import org.figrja.combo_auth.auth;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.instrument.ClassFileTransformer;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.security.ProtectionDomain;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
 
 import static org.objectweb.asm.Opcodes.ASM9;
 
