@@ -1,66 +1,84 @@
 package org.figrja.combo_auth_ahent;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
-import java.security.ProtectionDomain;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
-
-import org.figrja.combo_auth.auth;
-import org.figrja.combo_auth.config.debuglogger.LoggerMain;
-import org.figrja.combo_auth.checkauth;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
-
-import static org.objectweb.asm.Opcodes.ASM9;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.jar.JarInputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 
 public class Premain implements ClassFileTransformer {
 
-    static LoggerMain LOGGER = org.figrja.combo_auth.auth.Logger;
 
-    static auth auth = new auth();
+
     public static void premain(String args, Instrumentation inst){
-        System.out.println("Hello world!");
-
-
-        inst.addTransformer(new Premain());
-
-    }
-
-    @Override
-    public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer){
-
-        if (Objects.equals(className, "net/md_5/bungee/Bootstrap")){
-            System.out.println("not support");
-        }
-         else if (Objects.equals(className, "net/minecraft/bundler/Main")) {
-            System.out.println("hiii vanila!!");
-
-        }
-        else if (Objects.equals(className, "com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService")) {
-            try {
-                auth.onInitializeServer();
-                try {
-                    loader.loadClass(checkauth.class.getCanonicalName());
-                } catch (ClassNotFoundException e) {
-                    LOGGER.info(checkauth.class.getCanonicalName());
-                    throw new RuntimeException(e);
+        Map<String,byte[]> map = new HashMap<String, byte[]>();
+        try {
+            InputStream resourceAsStream = Premain.class.getClassLoader().getResourceAsStream("combo-auth-1.0.jar");
+            ZipInputStream jarFile;
+            if (resourceAsStream != null) {
+                jarFile = new ZipInputStream(resourceAsStream);
+                ZipEntry e;
+                while (true) {
+                    e = jarFile.getNextEntry();
+                    if (e == null) {
+                        break;
+                    }
+                    if (e.getName().endsWith(".class")) {
+                        String s = e.getName().substring(0, e.getName().length() - 6).replace('/','.');
+                        switch (s) {
+                            case "org.figrja.combo_auth.auth":
+                            case "org.figrja.combo_auth.config.pro":
+                            case "org.figrja.combo_auth.config.configGson":
+                            case "org.figrja.combo_auth.config.AuthSchemaList":
+                            case "org.figrja.combo_auth.config.debuglogger.LoggerMain":
+                            case "org.figrja.combo_auth.config.debuglogger.Logger":
+                            case "org.figrja.combo_auth.config.debuglogger.DebugAll":
+                            case "org.figrja.combo_auth.config.debuglogger.Debug": {
+                                map.put(s,jarFile.readAllBytes());
+                            }
+                        }
+                    }
                 }
-                ClassReader classReader = new ClassReader(classfileBuffer);
-                ClassWriter classWriter = new ClassWriter(classReader,1);
-                SWCV classVisitor = new SWCV(ASM9, classWriter);
-                classReader.accept(classVisitor, 0);
-                LOGGER.debug("URA");
-                return classWriter.toByteArray();
-            }catch (Throwable a){
-
-                a.printStackTrace();
             }
-
+            ByteClassLoader loader = new ByteClassLoader( map);
+            for (String s:map.keySet()){
+                System.out.println(s);
+                String[] split = s.split("\\.");
+                System.out.println(split[split.length-1]);
+                Class<?> aClass = loader.findClass(s);
+                Constructor constructors = aClass.getConstructor();
+                Object o = constructors.newInstance();
+                Method method = aClass.getMethod(split[split.length-1]);
+                method.invoke(o);
+                System.out.println("loadded");
+            }
+        } catch (Throwable e) {
+            System.out.println("lol");
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
+        inst.addTransformer(new ClassTransformer());
 
-        return classfileBuffer;
+
+
     }
+
+
+
 
 
 

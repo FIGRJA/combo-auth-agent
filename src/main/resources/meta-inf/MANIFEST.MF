@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
 Built-By: FIGRJA
 Premain-Class: org.figrja.combo_auth_ahent.Premain
+Class-Path: combo-auth-1.0.jar
 

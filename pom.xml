@@ -46,6 +46,13 @@
             <version>1.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.figrja</groupId>
+            <artifactId>combo-auth</artifactId>
+            <version>1.0</version>
+            <systemPath>${basedir}/src/main/resources/combo-auth-1.0.jar</systemPath>
+            <scope>system</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
