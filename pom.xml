@@ -50,7 +50,7 @@
             <groupId>org.figrja</groupId>
             <artifactId>combo-auth</artifactId>
             <version>1.0</version>
-            <systemPath>${basedir}/src/main/resources/combo-auth-1.0.jar</systemPath>
+            <systemPath>${basedir}/combo_auth/target/combo-auth-1.0.jar</systemPath>
             <scope>system</scope>
         </dependency>
     </dependencies>
@@ -60,14 +60,14 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <archive>
-                    <manifestFile>
-                        src/main/resources/meta-inf/MANIFEST.MF
-                    </manifestFile>
-                </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
+                        <manifestFile>
+                            src/main/resources/meta-inf/MANIFEST.MF
+                        </manifestFile>
+                    </archive>
+                        <descriptorRefs>
+                            <descriptorRef>jar-with-dependencies</descriptorRef>
+                        </descriptorRefs>
+                    </configuration>
                 <executions>
                     <execution>
                         <id>make-assembly</id>

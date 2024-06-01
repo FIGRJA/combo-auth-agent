@@ -55,17 +55,14 @@ public class Premain implements ClassFileTransformer {
                 }
             }
             ByteClassLoader loader = new ByteClassLoader( map);
-            for (String s:map.keySet()){
-                System.out.println(s);
-                String[] split = s.split("\\.");
-                System.out.println(split[split.length-1]);
-                Class<?> aClass = loader.findClass(s);
-                Constructor constructors = aClass.getConstructor();
-                Object o = constructors.newInstance();
-                Method method = aClass.getMethod(split[split.length-1]);
-                method.invoke(o);
-                System.out.println("loadded");
-            }
+            String s = "org.figrja.combo_auth.auth";
+            Class<?> aClass = loader.findClass(s);
+            Constructor constructors = aClass.getConstructor();
+            Object o = constructors.newInstance();
+            Method method = aClass.getMethod("onInitializeServer");
+            method.invoke(o);
+            System.out.println("loadded");
+
         } catch (Throwable e) {
             System.out.println("lol");
             e.printStackTrace();

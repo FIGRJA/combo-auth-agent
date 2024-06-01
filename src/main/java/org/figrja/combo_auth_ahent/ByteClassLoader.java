@@ -14,6 +14,7 @@ public class ByteClassLoader extends ClassLoader {
     @Override
     protected Class<?> findClass(final String name) throws ClassNotFoundException {
         byte[] classBytes = this.extraClassDefs.remove(name);
+        System.out.println(name);
         if (classBytes != null) {
             return defineClass(name, classBytes, 0, classBytes.length);
         }
