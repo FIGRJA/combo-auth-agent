@@ -30,11 +30,9 @@ public class checkauth {
         Map<String, Object> arguments = new HashMap();
         arguments.put("username", profileName);
         arguments.put("serverId", serverId);
-        boolean tr = false;
         AuthenticationUnavailableException var6 = null;
-        boolean AuthenticationException = false;
         Iterator var7 = this.CONFIG.getAuthList().iterator();
-        GameProfile result = null;
+        GameProfile result ;
         while(var7.hasNext()) {
             String name = (String)var7.next();
             this.LOGGER.debug("try " + name);
@@ -46,11 +44,7 @@ public class checkauth {
                 resultElyGson response = httpHelper.makeRequest(url);
                 if (response != null && response.getId() != null) {
                     this.LOGGER.debug("response not null");
-                    try {
-                        result = new GameProfile(response.getId(), response.getName());
-                    }catch (Throwable e ){
-                        LOGGER.debug("lol");
-                    }
+                    result = new GameProfile(response.getId(), response.getName());
                     if (response.getProperties() != null) {
                         new PropertyMap();
                         this.LOGGER.debug("properties not null");
@@ -83,12 +77,11 @@ public class checkauth {
                     return result;
                 }
             } catch (AuthenticationUnavailableException var17) {
-                tr = true;
                 var6 = var17;
             }
         }
 
-        if (tr) {
+        if (var6!=null) {
             throw var6;
         }
         return null;
