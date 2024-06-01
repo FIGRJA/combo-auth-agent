@@ -32,7 +32,7 @@ public class Premain implements ClassFileTransformer {
             System.out.println(s);
             File file = new File(s);
             JarFile jarFile = new JarFile(file);
-            inst.appendToSystemClassLoaderSearch(jarFile);
+            inst.appendToBootstrapClassLoaderSearch(jarFile);
         } catch (Throwable e) {
             e.printStackTrace();
         }
