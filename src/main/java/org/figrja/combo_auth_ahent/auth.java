@@ -16,10 +16,6 @@ public class auth {
     private final Gson gson = new Gson();
     public static LoggerMain Logger = new Logger("combo_auth");
 
-    public auth() {
-        System.out.println("URA");
-    }
-
     public void onInitializeServer() {
         Logger.info("start loading config");
         File ConfFile = new File("config", "combo_auth.json");

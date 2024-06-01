@@ -103,7 +103,8 @@ public class httpHelper {
     public static resultElyGson makeRequest(URL url) throws AuthenticationUnavailableException {
         try {
             String jsonResult = getRequest(url);
-            resultElyGson result = (resultElyGson)gson.fromJson(jsonResult, resultElyGson.class);
+            LOGGER.debugRes(jsonResult);
+            resultElyGson result = gson.fromJson(jsonResult, resultElyGson.class);
             if (result == null) {
                 return null;
             } else if (result.getError() != null) {

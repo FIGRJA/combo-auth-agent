@@ -86,9 +86,9 @@ public class checkauth {
 
         if (tr) {
             throw var6;
-        } else {
-            return null;
         }
+        return null;
+
     }
 
     public PropertyMap getProperty(propery[] AddProperty) {
