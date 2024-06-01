@@ -34,6 +34,7 @@ public class checkauth {
         AuthenticationUnavailableException var6 = null;
         boolean AuthenticationException = false;
         Iterator var7 = this.CONFIG.getAuthList().iterator();
+        GameProfile result;
 
         while(var7.hasNext()) {
             String name = (String)var7.next();
@@ -46,7 +47,7 @@ public class checkauth {
                 resultElyGson response = httpHelper.makeRequest(url);
                 if (response != null && response.getId() != null) {
                     this.LOGGER.debug("response not null");
-                    GameProfile result = new GameProfile(response.getId(), response.getName());
+                    result = new GameProfile(response.getId(), response.getName());
                     if (response.getProperties() != null) {
                         new PropertyMap();
                         this.LOGGER.debug("properties not null");
