@@ -26,11 +26,11 @@ public class checkauth {
         this.CONFIG = auth.getConfig();
     }
 
-    public GameProfile AuthListCheck(String profileName, String serverId) throws AuthenticationUnavailableException {
+    public GameProfile AuthListCheck(String profileName, String serverId) throws Exception {
         Map<String, Object> arguments = new HashMap();
         arguments.put("username", profileName);
         arguments.put("serverId", serverId);
-        AuthenticationUnavailableException var6 = null;
+        Exception var6 = null;
         Iterator var7 = this.CONFIG.getAuthList().iterator();
         GameProfile result ;
         while(var7.hasNext()) {
@@ -76,7 +76,7 @@ public class checkauth {
                     this.LOGGER.info("logging from " + name);
                     return result;
                 }
-            } catch (AuthenticationUnavailableException var17) {
+            } catch (Exception var17) {
                 var6 = var17;
             }
         }

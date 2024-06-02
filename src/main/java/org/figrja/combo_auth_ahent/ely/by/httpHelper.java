@@ -100,7 +100,7 @@ public class httpHelper {
         }
     }
 
-    public static resultElyGson makeRequest(URL url) throws AuthenticationUnavailableException {
+    public static resultElyGson makeRequest(URL url) throws Exception {
         try {
             String jsonResult = getRequest(url);
             LOGGER.debugRes(jsonResult);
@@ -114,7 +114,7 @@ public class httpHelper {
                 return result;
             }
         } catch (Exception var3) {
-            throw new AuthenticationUnavailableException("Cannot contact authentication server", var3);
+            throw var3;
         }
     }
 

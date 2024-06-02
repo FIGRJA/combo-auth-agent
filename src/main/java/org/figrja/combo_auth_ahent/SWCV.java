@@ -2,6 +2,19 @@ package org.figrja.combo_auth_ahent;
 
 import org.figrja.combo_auth_ahent.config.debuglogger.LoggerMain;
 import org.objectweb.asm.*;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.util.Printer;
+import org.objectweb.asm.util.Textifier;
+import org.objectweb.asm.util.TraceMethodVisitor;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.List;
+
 import static org.objectweb.asm.Opcodes.*;
 
 
@@ -46,12 +59,38 @@ public class SWCV extends ClassVisitor {
                 LOGGER.info("unknown version");
                 return null;
             }
+            ClassReader classReader;
+            try {
+                classReader = new ClassReader(KOSTblL.class.getCanonicalName().replace('/', '.'));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            ClassNode classNode = new ClassNode();
+            classReader.accept(classNode, 0);
+            @SuppressWarnings("unchecked") final List<MethodNode> methods = classNode.methods;
+            for (MethodNode m : methods) {
+                InsnList inList = m.instructions;
+                System.out.println(m.name);
+                for (int i = 0; i < inList.size(); i++) {
+                    LOGGER.debugRes(insnToString(inList.get(i)));
+                }
+            }
             LOGGER.debug("insert our method");
             return new EXT(cv.visitMethod(access, name, desc, signature, exceptions),version);
         }
         return cv.visitMethod(access, name, desc, signature, exceptions);
 
     }
+    String insnToString(AbstractInsnNode insn){
+        insn.accept(mp);
+        StringWriter sw = new StringWriter();
+        printer.print(new PrintWriter(sw));
+        printer.getText().clear();
+        return sw.toString();
+    }
+
+    private static Printer printer = new Textifier();
+    private static TraceMethodVisitor mp = new TraceMethodVisitor(printer);
 
     public static class EXT extends MethodVisitor{
         int version;
