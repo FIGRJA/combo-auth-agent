@@ -59,38 +59,13 @@ public class SWCV extends ClassVisitor {
                 LOGGER.info("unknown version");
                 return null;
             }
-            ClassReader classReader;
-            try {
-                classReader = new ClassReader(KOSTblL.class.getCanonicalName().replace('/', '.'));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            ClassNode classNode = new ClassNode();
-            classReader.accept(classNode, 0);
-            @SuppressWarnings("unchecked") final List<MethodNode> methods = classNode.methods;
-            for (MethodNode m : methods) {
-                InsnList inList = m.instructions;
-                System.out.println(m.name);
-                for (int i = 0; i < inList.size(); i++) {
-                    LOGGER.debugRes(insnToString(inList.get(i)));
-                }
-            }
+
             LOGGER.debug("insert our method");
             return new EXT(cv.visitMethod(access, name, desc, signature, exceptions),version);
         }
         return cv.visitMethod(access, name, desc, signature, exceptions);
 
     }
-    String insnToString(AbstractInsnNode insn){
-        insn.accept(mp);
-        StringWriter sw = new StringWriter();
-        printer.print(new PrintWriter(sw));
-        printer.getText().clear();
-        return sw.toString();
-    }
-
-    private static Printer printer = new Textifier();
-    private static TraceMethodVisitor mp = new TraceMethodVisitor(printer);
 
     public static class EXT extends MethodVisitor{
         int version;
@@ -121,9 +96,26 @@ public class SWCV extends ClassVisitor {
             mv.visitVarInsn(ALOAD,2);
             mv.visitMethodInsn(INVOKEVIRTUAL, "org/figrja/combo_auth_ahent/checkauth", "AuthListCheck", "(Ljava/lang/String;Ljava/lang/String;)Lcom/mojang/authlib/GameProfile;");
             if (version == 1){
-                mv.visitMethodInsn(INVOKEVIRTUAL, "com/mojang/authlib/yggdrasil/ProfileResult", "<init>", "(Lcom/mojang/authlib/GameProfile;)V");
+                mv.visitMethodInsn(INVOKESPECIAL, "com/mojang/authlib/yggdrasil/ProfileResult", "<init>", "(Lcom/mojang/authlib/GameProfile;)V");
             }
+
+            Label l2 = new Label();
+            mv.visitLabel(l2);
             mv.visitInsn(ARETURN);
+
+            Label l3 = new Label();
+            mv.visitLabel(l3);
+            mv.visitFrame(F_SAME1,0,null,1,new Object[]{"java/lang/Exception"});
+            mv.visitVarInsn(ASTORE,4);
+
+            Label l4 = new Label();
+            mv.visitLabel(l4);
+            mv.visitTypeInsn(NEW,"com/mojang/authlib/exceptions/AuthenticationUnavailableException");
+            mv.visitInsn(DUP);
+            mv.visitLdcInsn("Cannot contact authentication server");
+            mv.visitVarInsn(ALOAD,4);
+            mv.visitMethodInsn(INVOKESPECIAL, "com/mojang/authlib/exceptions/AuthenticationUnavailableException","<init>" ,"(Ljava/lang/String;Ljava/lang/Throwable;)V");
+            mv.visitInsn(ATHROW);
             mv.visitMaxs(1,1);
             mv.visitEnd();
         }
