@@ -29,7 +29,6 @@ public class checkauth {
         arguments.put("serverId", serverId);
         Exception var6 = null;
         Iterator var7 = CONFIG.getAuthList().iterator();
-        GameProfile result ;
         while(var7.hasNext()) {
             String name = (String)var7.next();
             LOGGER.debug("try " + name);
@@ -41,7 +40,7 @@ public class checkauth {
                 resultElyGson response = httpHelper.makeRequest(url);
                 if (response != null && response.getId() != null) {
                     LOGGER.debug("response not null");
-                    result = new GameProfile(response.getId(), response.getName());
+                    GameProfile result = new GameProfile(response.getId(), response.getName());
                     if (response.getProperties() != null) {
                         new PropertyMap();
                         LOGGER.debug("properties not null");
