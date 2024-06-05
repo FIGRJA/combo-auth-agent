@@ -6,9 +6,9 @@ import org.objectweb.asm.ClassWriter;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.ada;
 import java.security.ProtectionDomain;
 import java.util.Objects;
 
@@ -46,9 +46,7 @@ public class ClassTransformer implements ClassFileTransformer {
                 if (loader instanceof URLClassLoader){
                     URLClassLoader urlClassLoader = (URLClassLoader)loader;
                     URL s = Premain.class.getProtectionDomain().getCodeSource().getLocation().toURI().toURL();
-                    Method add = URLClassLoader.class.getDeclaredMethod("addURL",URL.class);
-                    add.setAccessible(true);
-                    add.invoke(urlClassLoader,s);
+                    ada.add(urlClassLoader,s);
                 }
                 return classWriter.toByteArray();
             }catch (Throwable a){
