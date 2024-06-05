@@ -5,6 +5,9 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 
 import java.lang.instrument.ClassFileTransformer;
+import java.lang.instrument.Instrumentation;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.security.ProtectionDomain;
 import java.util.Objects;
 
@@ -15,13 +18,14 @@ public class ClassTransformer implements ClassFileTransformer {
 
     static auth auth = new auth();
 
-    public ClassTransformer(){
+    Instrumentation inst;
 
+    public ClassTransformer(Instrumentation inst){
+        this.inst = inst;
     }
 
     @Override
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer){
-
         if (Objects.equals(className, "net/md_5/bungee/Bootstrap")){
             System.out.println("not support");
         }
@@ -32,11 +36,17 @@ public class ClassTransformer implements ClassFileTransformer {
         else if (Objects.equals(className, "com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService")) {
             try {
                 auth.onInitializeServer();
+
                 ClassReader classReader = new ClassReader(classfileBuffer);
                 ClassWriter classWriter = new ClassWriter(classReader,1);
                 SWCV classVisitor = new SWCV(ASM9, classWriter);
                 classReader.accept(classVisitor, 0);
                 LOGGER.debug("URA");
+                if (loader instanceof URLClassLoader){
+                    URL[] urLs = ((URLClassLoader) loader).getURLs();
+                    String s = Premain.class.getProtectionDomain().getCodeSource().getLocation().getFile();
+                    ((URLClassLoader) loader).getURLs()[urLs.length] = new URL(s);
+                }
                 return classWriter.toByteArray();
             }catch (Throwable a){
 

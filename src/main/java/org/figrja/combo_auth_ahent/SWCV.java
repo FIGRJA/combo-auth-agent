@@ -2,18 +2,6 @@ package org.figrja.combo_auth_ahent;
 
 import org.figrja.combo_auth_ahent.config.debuglogger.LoggerMain;
 import org.objectweb.asm.*;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.util.Printer;
-import org.objectweb.asm.util.Textifier;
-import org.objectweb.asm.util.TraceMethodVisitor;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.List;
 
 import static org.objectweb.asm.Opcodes.*;
 

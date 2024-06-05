@@ -1,7 +1,6 @@
 package org.figrja.combo_auth_ahent;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import org.figrja.combo_auth_ahent.config.AuthSchemaList;
@@ -11,26 +10,22 @@ import org.figrja.combo_auth_ahent.ely.by.httpHelper;
 import org.figrja.combo_auth_ahent.ely.by.propery;
 import org.figrja.combo_auth_ahent.ely.by.resultElyGson;
 
-import java.net.InetAddress;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class checkauth {
 
-    public GameProfile AuthListCheck(String profileName, String serverId, InetAddress address) throws AuthenticationUnavailableException {
+    public GameProfile AuthListCheck(String profileName, String serverId) throws Exception {
 
         LoggerMain LOGGER = auth.Logger;
         configGson CONFIG = auth.getConfig();
-        Map<String, Object> arguments = new HashMap();
+        Map<String, Object> arguments = new HashMap<>();
         arguments.put("username", profileName);
         arguments.put("serverId", serverId);
         Exception var6 = null;
-        Iterator var7 = CONFIG.getAuthList().iterator();
-        while(var7.hasNext()) {
-            String name = (String)var7.next();
+        for (String name : CONFIG.getAuthList()) {
             LOGGER.debug("try " + name);
             AuthSchemaList authSchema = CONFIG.getAuthSchema().get(name);
             LOGGER.debugRes("in " + authSchema.getUrlCheck());
@@ -49,7 +44,7 @@ public class checkauth {
                             LOGGER.debug("custom property");
                             LOGGER.debugRes("in " + authSchema.getUrlProperty());
                             String PROPERTY_URL = authSchema.getUrlProperty();
-                            URL p_url = httpHelper.concatenateURL(httpHelper.constantURL(MessageFormat.format(PROPERTY_URL, profileName, response.getId())), httpHelper.buildQuery((Map)null));
+                            URL p_url = httpHelper.constantURL(MessageFormat.format(PROPERTY_URL, profileName, response.getId()));
                             resultElyGson pr = httpHelper.makeRequest(p_url);
                             if (pr != null) {
                                 properties = pr.getProperties();
@@ -87,7 +82,7 @@ public class checkauth {
         }
 
         if (var6!=null) {
-            throw new AuthenticationUnavailableException("Cannot contact authentication server", var6);
+            throw var6;
         }
         return null;
 
