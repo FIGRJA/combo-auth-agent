@@ -8,7 +8,6 @@ import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.net.ada;
 import java.security.ProtectionDomain;
 import java.util.Objects;
 
@@ -44,9 +43,9 @@ public class ClassTransformer implements ClassFileTransformer {
                 classReader.accept(classVisitor, 0);
                 LOGGER.debug("URA");
                 if (loader instanceof URLClassLoader){
-                    URLClassLoader urlClassLoader = (URLClassLoader)loader;
-                    URL s = Premain.class.getProtectionDomain().getCodeSource().getLocation().toURI().toURL();
-                    ada.add(urlClassLoader,s);
+                    URLClassLoader urlClassLoader = (URLClassLoader) loader;
+                    URL s = Premain.class.getProtectionDomain().getCodeSource().getLocation();
+                    ((add) urlClassLoader).addURL(s);
                 }
                 return classWriter.toByteArray();
             }catch (Throwable a){
@@ -54,6 +53,12 @@ public class ClassTransformer implements ClassFileTransformer {
                 a.printStackTrace();
             }
 
+        }else if (className.equals("java/net/URLClassLoader")){
+            ClassReader classReader = new ClassReader(classfileBuffer);
+            ClassWriter classWriter = new ClassWriter(classReader,1);
+            SWCV classVisitor = new SWCV(ASM9, classWriter);
+            classReader.accept(classVisitor, 0);
+            return classWriter.toByteArray();
         }
 
         return classfileBuffer;

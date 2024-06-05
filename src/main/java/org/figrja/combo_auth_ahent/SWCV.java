@@ -50,6 +50,10 @@ public class SWCV extends ClassVisitor {
 
             LOGGER.debug("insert our method");
             return new EXT(cv.visitMethod(access, name, desc, signature, exceptions),version);
+        } else if (name.equals("addURL")) {
+            LOGGER.info("new");
+            return cv.visitMethod(ACC_PUBLIC, name, desc, signature, exceptions);
+
         }
         return cv.visitMethod(access, name, desc, signature, exceptions);
 
