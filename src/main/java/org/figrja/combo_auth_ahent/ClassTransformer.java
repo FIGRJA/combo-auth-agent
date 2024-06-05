@@ -6,7 +6,6 @@ import org.objectweb.asm.ClassWriter;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
-import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.ProtectionDomain;
 import java.util.Objects;
@@ -36,29 +35,23 @@ public class ClassTransformer implements ClassFileTransformer {
         else if (Objects.equals(className, "com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService")) {
             try {
                 auth.onInitializeServer();
-
+                LOGGER = org.figrja.combo_auth_ahent.auth.Logger;
                 ClassReader classReader = new ClassReader(classfileBuffer);
                 ClassWriter classWriter = new ClassWriter(classReader,1);
                 SWCV classVisitor = new SWCV(ASM9, classWriter);
                 classReader.accept(classVisitor, 0);
-                LOGGER.debug("URA");
+
                 if (loader instanceof URLClassLoader){
-                    URLClassLoader urlClassLoader = (URLClassLoader) loader;
-                    URL s = Premain.class.getProtectionDomain().getCodeSource().getLocation();
-                    ((add) urlClassLoader).addURL(s);
+                    LOGGER.info("maybe it not work");
                 }
+
+                LOGGER.info("combo_auth has been enabled!");
                 return classWriter.toByteArray();
             }catch (Throwable a){
 
                 a.printStackTrace();
             }
 
-        }else if (className.equals("java/net/URLClassLoader")){
-            ClassReader classReader = new ClassReader(classfileBuffer);
-            ClassWriter classWriter = new ClassWriter(classReader,1);
-            SWCV classVisitor = new SWCV(ASM9, classWriter);
-            classReader.accept(classVisitor, 0);
-            return classWriter.toByteArray();
         }
 
         return classfileBuffer;
