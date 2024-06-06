@@ -169,7 +169,7 @@ public class SWCV extends ClassVisitor {
             mv.visitTypeInsn(CHECKCAST,"org/figrja/combo_auth_ahent/ely/by/propery");
             mv.visitVarInsn(ASTORE, 8);
 
-            //profile.getProperties().put(p.name(),new Property(p.name(), p.signature(), p.value()));
+            //profile.getProperties().put(p.name(),new Property(p.name(), p.value(), p.signature()));
             mv.visitLabel(l13);
             mv.visitVarInsn(ALOAD ,5);
             mv.visitMethodInsn(INVOKEVIRTUAL,"com/mojang/authlib/GameProfile","getProperties","()Lcom/mojang/authlib/properties/PropertyMap;",false);
@@ -180,9 +180,9 @@ public class SWCV extends ClassVisitor {
             mv.visitVarInsn(ALOAD,8);
             mv.visitMethodInsn(INVOKEVIRTUAL,"org/figrja/combo_auth_ahent/ely/by/propery","name","()Ljava/lang/String;",false);
             mv.visitVarInsn(ALOAD,8);
-            mv.visitMethodInsn(INVOKEVIRTUAL,"org/figrja/combo_auth_ahent/ely/by/propery","signature","()Ljava/lang/String;",false);
-            mv.visitVarInsn(ALOAD,8);
             mv.visitMethodInsn(INVOKEVIRTUAL,"org/figrja/combo_auth_ahent/ely/by/propery","value","()Ljava/lang/String;",false);
+            mv.visitVarInsn(ALOAD,8);
+            mv.visitMethodInsn(INVOKEVIRTUAL,"org/figrja/combo_auth_ahent/ely/by/propery","signature","()Ljava/lang/String;",false);
             mv.visitMethodInsn(INVOKESPECIAL,"com/mojang/authlib/properties/Property","<init>","(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V",false);
             mv.visitMethodInsn(INVOKEVIRTUAL,"com/mojang/authlib/properties/PropertyMap","put","(Ljava/lang/Object;Ljava/lang/Object;)Z",false);
 
