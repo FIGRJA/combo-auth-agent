@@ -2,14 +2,17 @@ package org.figrja.combo_auth_ahent;
 
 
 import org.figrja.combo_auth_ahent.config.debuglogger.LoggerMain;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
+import org.figrja.org.objectweb.asm.ClassReader;
+import org.figrja.org.objectweb.asm.ClassWriter;
+
+import java.io.File;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
 import java.security.ProtectionDomain;
 import java.util.Objects;
+import java.util.jar.JarFile;
 
-import static org.objectweb.asm.Opcodes.ASM9;
+import static org.figrja.org.objectweb.asm.Opcodes.ASM9;
 
 public class ClassTransformer implements ClassFileTransformer {
     static LoggerMain LOGGER = org.figrja.combo_auth_ahent.auth.Logger;
@@ -39,6 +42,14 @@ public class ClassTransformer implements ClassFileTransformer {
                 ClassWriter classWriter = new ClassWriter(classReader,1);
                 SWCV classVisitor = new SWCV(ASM9, classWriter);
                 classReader.accept(classVisitor, 0);
+                try {
+                    String s = Premain.class.getProtectionDomain().getCodeSource().getLocation().getFile();
+                    File file = new File(s);
+                    //inst.appendToBootstrapClassLoaderSearch(new JarFile(file));
+                    inst.appendToSystemClassLoaderSearch(new JarFile(file));
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
                 LOGGER.info("combo_auth has been enabled!");
                 return classWriter.toByteArray();
             }catch (Throwable a){
@@ -46,12 +57,6 @@ public class ClassTransformer implements ClassFileTransformer {
                 a.printStackTrace();
             }
 
-        }else if (className.equals("java/net/URLClassLoader")){
-            ClassReader classReader = new ClassReader(classfileBuffer);
-            ClassWriter classWriter = new ClassWriter(classReader,1);
-            SWCV classVisitor = new SWCV(ASM9, classWriter);
-            classReader.accept(classVisitor, 0);
-            return classWriter.toByteArray();
         }
 
         return classfileBuffer;

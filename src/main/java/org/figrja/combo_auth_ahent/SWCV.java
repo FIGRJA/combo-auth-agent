@@ -1,9 +1,9 @@
 package org.figrja.combo_auth_ahent;
 
 import org.figrja.combo_auth_ahent.config.debuglogger.LoggerMain;
-import org.objectweb.asm.*;
+import org.figrja.org.objectweb.asm.*;
 
-import static org.objectweb.asm.Opcodes.*;
+import static org.figrja.org.objectweb.asm.Opcodes.*;
 
 
 public class SWCV extends ClassVisitor {
@@ -197,11 +197,16 @@ public class SWCV extends ClassVisitor {
             mv.visitLabel(l10);
             mv.visitFrame(F_CHOP,1,null,0,null);
             if (version == 1){
-
+                mv.visitTypeInsn(NEW,"com/mojang/authlib/yggdrasil/ProfileResult");
+                mv.visitInsn(DUP);
             }
             mv.visitIntInsn(ALOAD,5);
             if (version == 1){
-
+                mv.visitIntInsn(ALOAD,4);
+                mv.visitLdcInsn("actions");
+                mv.visitMethodInsn(INVOKEVIRTUAL,"java/util/HashMap","get","(Ljava/lang/Object;)Ljava/lang/Object;",false);
+                mv.visitTypeInsn(CHECKCAST,"java/util/Set");
+                mv.visitMethodInsn(INVOKESPECIAL,"com/mojang/authlib/yggdrasil/ProfileResult","<init>","(Lcom/mojang/authlib/GameProfile;Ljava/util/Set;)V",false);
             }
             mv.visitInsn(ARETURN);
             //end if

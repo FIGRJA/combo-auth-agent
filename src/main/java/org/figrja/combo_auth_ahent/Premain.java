@@ -15,16 +15,6 @@ public class Premain implements ClassFileTransformer {
 
 
     public static void premain(String args, Instrumentation inst) {
-        try {
-            String s = Premain.class.getProtectionDomain().getCodeSource().getLocation().getFile();
-            File file = new File(s);
-            inst.appendToBootstrapClassLoaderSearch(new JarFile(file));
-            inst.appendToSystemClassLoaderSearch(new JarFile(file));
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-
-
         inst.addTransformer(new ClassTransformer(inst));
 
 

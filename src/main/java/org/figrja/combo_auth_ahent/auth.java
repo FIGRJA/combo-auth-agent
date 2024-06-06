@@ -59,7 +59,7 @@ public class auth {
         Files.createFile(ConfFile.toPath());
         InputStream inputStream = org.figrja.combo_auth_ahent.auth.class.getClassLoader().getResourceAsStream("combo_auth.json");
         if (inputStream != null) {
-            config = (configGson)this.gson.fromJson(new BufferedReader(new InputStreamReader(inputStream)), configGson.class);
+            config = gson.fromJson(new BufferedReader(new InputStreamReader(inputStream)), configGson.class);
         } else {
             Logger.info("wtf inputStream of config in jar is null");
         }
