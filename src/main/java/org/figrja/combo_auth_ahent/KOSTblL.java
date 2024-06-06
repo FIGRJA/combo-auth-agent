@@ -16,10 +16,10 @@ import java.util.UUID;
 
 public class KOSTblL {
 
-    public ProfileResult hasServerJoined(String user, String serverId , InetAddress address) throws AuthenticationUnavailableException {
+    public GameProfile hasServerJoined(GameProfile user, String serverId , InetAddress address) throws AuthenticationUnavailableException {
         HashMap<String,Object> result;
         try {
-            result = new checkauth().AuthListCheck(user,serverId);
+            result = new checkauth().AuthListCheck(user.getName(),serverId);
         } catch (Exception e) {
             throw new AuthenticationUnavailableException("Cannot contact authentication server",e);
         }
@@ -32,7 +32,7 @@ public class KOSTblL {
                 }
 
             }
-            return new ProfileResult(profile, (Set<ProfileActionType>) result.get("actions")) ;
+            return profile ;
         }
         return null;
     }

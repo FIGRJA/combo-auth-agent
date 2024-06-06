@@ -4,7 +4,6 @@ package org.figrja.combo_auth_ahent;
 import org.figrja.combo_auth_ahent.config.debuglogger.LoggerMain;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
-
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
 import java.security.ProtectionDomain;
@@ -40,8 +39,7 @@ public class ClassTransformer implements ClassFileTransformer {
                 ClassWriter classWriter = new ClassWriter(classReader,1);
                 SWCV classVisitor = new SWCV(ASM9, classWriter);
                 classReader.accept(classVisitor, 0);
-                LOGGER.debug("URA");
-
+                LOGGER.info("combo_auth has been enabled!");
                 return classWriter.toByteArray();
             }catch (Throwable a){
 
@@ -58,5 +56,7 @@ public class ClassTransformer implements ClassFileTransformer {
 
         return classfileBuffer;
     }
+
+
 
 }

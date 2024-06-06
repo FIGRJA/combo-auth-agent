@@ -48,7 +48,6 @@ public class auth {
             }
         }
 
-        Logger.info("combo_auth has been enabled!");
     }
 
     public static configGson getConfig() {

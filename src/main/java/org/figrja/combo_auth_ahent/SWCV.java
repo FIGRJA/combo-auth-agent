@@ -183,17 +183,19 @@ public class SWCV extends ClassVisitor {
             mv.visitMethodInsn(INVOKEVIRTUAL,"org/figrja/combo_auth_ahent/ely/by/propery","signature","()Ljava/lang/String;",false);
             mv.visitVarInsn(ALOAD,8);
             mv.visitMethodInsn(INVOKEVIRTUAL,"org/figrja/combo_auth_ahent/ely/by/propery","value","()Ljava/lang/String;",false);
-            mv.visitMethodInsn(INVOKESPECIAL,"com/mojang/authlib/properties/Property","<init> ","(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V",false);
+            mv.visitMethodInsn(INVOKESPECIAL,"com/mojang/authlib/properties/Property","<init>","(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V",false);
             mv.visitMethodInsn(INVOKEVIRTUAL,"com/mojang/authlib/properties/PropertyMap","put","(Ljava/lang/Object;Ljava/lang/Object;)Z",false);
 
             mv.visitInsn(POP);
             //end for
             //end if
+            mv.visitLabel(l14);
+            mv.visitJumpInsn(GOTO,l12);
 
             ///return profile;
             ///return new ProfileResult(profile, (Set<ProfileActionType>) result.get("actions")) ;
             mv.visitLabel(l10);
-            mv.visitFrame(F_APPEND,2,new Object[]{"com/mojang/authlib/GameProfile","java/lang/Object"},0,null);
+            mv.visitFrame(F_CHOP,1,null,0,null);
             if (version == 1){
 
             }
@@ -205,7 +207,7 @@ public class SWCV extends ClassVisitor {
             //end if
 
             //return null;
-            mv.visitLabel(l11);
+            mv.visitLabel(l6);
             mv.visitFrame(F_CHOP,2,null,0,null);
             mv.visitInsn(ACONST_NULL);
             mv.visitInsn(ARETURN);
