@@ -45,8 +45,8 @@ public class ClassTransformer implements ClassFileTransformer {
                 try {
                     String s = Premain.class.getProtectionDomain().getCodeSource().getLocation().getFile();
                     File file = new File(s);
-                    //inst.appendToBootstrapClassLoaderSearch(new JarFile(file));
-                    inst.appendToSystemClassLoaderSearch(new JarFile(file));
+                    inst.appendToBootstrapClassLoaderSearch(new JarFile(file));
+                    //inst.appendToSystemClassLoaderSearch(new JarFile(file));
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }
