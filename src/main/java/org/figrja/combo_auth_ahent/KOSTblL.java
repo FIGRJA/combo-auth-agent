@@ -1,21 +1,22 @@
 package org.figrja.combo_auth_ahent;
 
-import com.google.common.collect.Multimap;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
-import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
+import com.mojang.authlib.yggdrasil.ProfileActionType;
+import com.mojang.authlib.yggdrasil.ProfileResult;
 
 import java.net.InetAddress;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.UUID;
 
 public class KOSTblL {
 
-    public GameProfile hasServerJoined(GameProfile user, String serverId , InetAddress address) throws AuthenticationUnavailableException {
+    public ProfileResult hasServerJoined(String user, String serverId , InetAddress address) throws AuthenticationUnavailableException {
         HashMap<String,Object> result;
         try {
-            result = new checkauth().AuthListCheck(user.getName(),serverId);
+            result = new checkauth().AuthListCheck(user,serverId);
         } catch (Exception e) {
             throw new AuthenticationUnavailableException("Cannot contact authentication server",e);
         }
@@ -25,7 +26,7 @@ public class KOSTblL {
             if (properties != null) {
                 profile.getProperties().putAll((PropertyMap) properties);
             }
-            return profile;
+            return new ProfileResult(profile, (Set<ProfileActionType>) result.get("actions")) ;
         }
         return null;
     }
