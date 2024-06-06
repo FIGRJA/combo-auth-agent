@@ -28,17 +28,8 @@ public class resultElyGson {
         return this.name;
     }
 
-    public PropertyMap getProperties() {
-        PropertyMap pm = new PropertyMap();
-        propery[] var2 = this.properties;
-        int var3 = var2.length;
-
-        for(int var4 = 0; var4 < var3; ++var4) {
-            propery p = var2[var4];
-            pm.put(p.name(), new Property(p.name(), p.value(), p.signature()));
-        }
-
-        return pm;
+    public propery[] getProperties() {
+        return properties;
     }
 
     public String getError() {

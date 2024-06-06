@@ -85,6 +85,9 @@ public class SWCV extends ClassVisitor {
             Label l9 = new Label();
             Label l10 = new Label();
             Label l11 = new Label();
+            Label l12 = new Label();
+            Label l13 = new Label();
+            Label l14 = new Label();
 
             ///result = new checkauth().AuthListCheck(user.getName(),serverId);
             ///result = new checkauth().AuthListCheck(user,serverId);
@@ -137,26 +140,54 @@ public class SWCV extends ClassVisitor {
             mv.visitMethodInsn(INVOKESPECIAL,"com/mojang/authlib/GameProfile","<init>","(Ljava/util/UUID;Ljava/lang/String;)V",false);
             mv.visitVarInsn(ASTORE,5);
 
-            //Object properties = result.get("properties");
+            //ArrayList<propery> properties = (ArrayList<propery>) result.get("properties");
             mv.visitLabel(l8);
             mv.visitVarInsn(ALOAD,4);
             mv.visitLdcInsn("properties");
             mv.visitMethodInsn(INVOKEVIRTUAL,"java/util/HashMap","get","(Ljava/lang/Object;)Ljava/lang/Object;",false);
+            mv.visitTypeInsn(CHECKCAST,"java/util/ArrayList");
             mv.visitVarInsn(ASTORE,6);
 
             //if (properties != null)
             mv.visitLabel(l9);
-            mv.visitVarInsn(ALOAD,4);
+            mv.visitVarInsn(ALOAD,6);
             mv.visitJumpInsn(IFNULL,l10);
 
-            //profile.getProperties().putAll((PropertyMap) properties);
+            //for (propery p : properties)
             mv.visitLabel(l11);
-            mv.visitVarInsn(ALOAD,5);
-            mv.visitMethodInsn(INVOKEVIRTUAL,"com/mojang/authlib/GameProfile","getProperties","()Lcom/mojang/authlib/properties/PropertyMap;",false);
             mv.visitVarInsn(ALOAD,6);
-            mv.visitTypeInsn(CHECKCAST, "com/mojang/authlib/properties/PropertyMap");
-            mv.visitMethodInsn(INVOKEVIRTUAL, "com/mojang/authlib/properties/PropertyMap","putAll", "(Lcom/google/common/collect/Multimap;)Z",false);
+            mv.visitMethodInsn(INVOKEVIRTUAL,"java/util/ArrayList","iterator","()Ljava/util/Iterator;",false);
+            mv.visitVarInsn(ASTORE,7);
+
+            mv.visitLabel(l12);
+            mv.visitFrame(F_APPEND,3,new Object[]{"com/mojang/authlib/GameProfile", "java/util/ArrayList", "java/util/Iterator"},0,null);
+            mv.visitVarInsn(ALOAD,7);
+            mv.visitMethodInsn(INVOKEINTERFACE,"java/util/Iterator","hasNext","()Z",true);
+            mv.visitJumpInsn(IFEQ,l10);
+            mv.visitVarInsn(ALOAD , 7);
+            mv.visitMethodInsn(INVOKEINTERFACE,"java/util/Iterator","next","()Ljava/lang/Object;",true);
+            mv.visitTypeInsn(CHECKCAST,"org/figrja/combo_auth_ahent/ely/by/propery");
+            mv.visitVarInsn(ASTORE, 8);
+
+            //profile.getProperties().put(p.name(),new Property(p.name(), p.signature(), p.value()));
+            mv.visitLabel(l13);
+            mv.visitVarInsn(ALOAD ,5);
+            mv.visitMethodInsn(INVOKEVIRTUAL,"com/mojang/authlib/GameProfile","getProperties","()Lcom/mojang/authlib/properties/PropertyMap;",false);
+            mv.visitVarInsn(ALOAD,8);
+            mv.visitMethodInsn(INVOKEVIRTUAL,"org/figrja/combo_auth_ahent/ely/by/propery","name","()Ljava/lang/String;",false);
+            mv.visitTypeInsn(NEW,"com/mojang/authlib/properties/Property");
+            mv.visitInsn(DUP);
+            mv.visitVarInsn(ALOAD,8);
+            mv.visitMethodInsn(INVOKEVIRTUAL,"org/figrja/combo_auth_ahent/ely/by/propery","name","()Ljava/lang/String;",false);
+            mv.visitVarInsn(ALOAD,8);
+            mv.visitMethodInsn(INVOKEVIRTUAL,"org/figrja/combo_auth_ahent/ely/by/propery","signature","()Ljava/lang/String;",false);
+            mv.visitVarInsn(ALOAD,8);
+            mv.visitMethodInsn(INVOKEVIRTUAL,"org/figrja/combo_auth_ahent/ely/by/propery","value","()Ljava/lang/String;",false);
+            mv.visitMethodInsn(INVOKESPECIAL,"com/mojang/authlib/properties/Property","<init> ","(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V",false);
+            mv.visitMethodInsn(INVOKEVIRTUAL,"com/mojang/authlib/properties/PropertyMap","put","(Ljava/lang/Object;Ljava/lang/Object;)Z",false);
+
             mv.visitInsn(POP);
+            //end for
             //end if
 
             ///return profile;
@@ -174,7 +205,7 @@ public class SWCV extends ClassVisitor {
             //end if
 
             //return null;
-            mv.visitLabel(l6);
+            mv.visitLabel(l11);
             mv.visitFrame(F_CHOP,2,null,0,null);
             mv.visitInsn(ACONST_NULL);
             mv.visitInsn(ARETURN);

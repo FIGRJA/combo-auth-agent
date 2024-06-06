@@ -2,11 +2,14 @@ package org.figrja.combo_auth_ahent;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
+import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.yggdrasil.ProfileActionType;
 import com.mojang.authlib.yggdrasil.ProfileResult;
+import org.figrja.combo_auth_ahent.ely.by.propery;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
@@ -22,9 +25,12 @@ public class KOSTblL {
         }
         if (result != null){
             GameProfile profile = new GameProfile((UUID) result.get("id"), (String) result.get("name"));
-            Object properties = result.get("properties");
+            ArrayList<propery> properties = (ArrayList<propery>) result.get("properties");
             if (properties != null) {
-                profile.getProperties().putAll((PropertyMap) properties);
+                for (propery p : properties){
+                    profile.getProperties().put(p.name(),new Property(p.name(), p.signature(), p.value()));
+                }
+
             }
             return new ProfileResult(profile, (Set<ProfileActionType>) result.get("actions")) ;
         }

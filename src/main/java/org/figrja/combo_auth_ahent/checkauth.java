@@ -1,7 +1,5 @@
 package org.figrja.combo_auth_ahent;
 
-import com.mojang.authlib.properties.Property;
-import com.mojang.authlib.properties.PropertyMap;
 import org.figrja.combo_auth_ahent.config.AuthSchemaList;
 import org.figrja.combo_auth_ahent.config.configGson;
 import org.figrja.combo_auth_ahent.config.debuglogger.LoggerMain;
@@ -11,6 +9,8 @@ import org.figrja.combo_auth_ahent.ely.by.resultElyGson;
 
 import java.net.URL;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,8 +37,8 @@ public class checkauth {
                     LOGGER.debug("response not null");
                     result.put("name",response.getName());
                     result.put("id",response.getId());
+                    ArrayList<propery> properties = new ArrayList<>();
 
-                    PropertyMap properties = null;
                     if (response.getProperties() != null) {
                         LOGGER.debug("properties not null");
                         if (authSchema.getUrlProperty() != null) {
@@ -48,34 +48,22 @@ public class checkauth {
                             URL p_url = httpHelper.constantURL(MessageFormat.format(PROPERTY_URL, profileName, response.getId()));
                             resultElyGson pr = httpHelper.makeRequest(p_url);
                             if (pr != null) {
-                                properties = pr.getProperties();
+                                properties.addAll(Arrays.asList(pr.getProperties()));
                             } else {
                                 LOGGER.debug("custom property is null");
-                                properties = response.getProperties();
+                                properties.addAll(Arrays.asList(response.getProperties()));
                             }
                         } else {
-                            properties = response.getProperties();
+                            properties.addAll(Arrays.asList(response.getProperties()));
                         }
 
-                        result.put("properties",properties);
                     }
 
                     if (authSchema.getAddProperty() != null) {
                         LOGGER.debug("add custom property");
-                        PropertyMap map = new PropertyMap();
-                        propery[] AP = authSchema.getAddProperty();
-                        if (properties != null) {
-                            map.putAll(properties);
-                        }
-                        for (propery p : AP) {
-                            if (p.signature() != null) {
-                                map.put(p.name(), new Property(p.name(), p.value(), p.signature()));
-                            } else {
-                                map.put(p.name(), new Property(p.name(), p.value()));
-                            }
-                        }
-                        result.put("properties",properties);
+                        properties.addAll(Arrays.asList(authSchema.getAddProperty()));
                     }
+                    result.put("properties",properties);
 
                     LOGGER.info("logging from " + name);
                     return result;
