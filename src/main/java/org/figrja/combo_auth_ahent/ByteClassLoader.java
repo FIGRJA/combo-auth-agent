@@ -12,12 +12,11 @@ public class ByteClassLoader extends ClassLoader {
 
     @Override
     protected Class<?> findClass(final String name) throws ClassNotFoundException {
-        byte[] classBytes = this.extraClassDefs.remove(name);
-        System.out.println(name);
+        byte[] classBytes = this.extraClassDefs.get(name);
         if (classBytes != null) {
             return defineClass(name, classBytes, 0, classBytes.length);
         }
-        System.out.println("lox");
+        System.out.println("lox "+name);
         return super.findClass(name);
     }
 

@@ -13,7 +13,7 @@ public class SWCV extends ClassVisitor {
     }
 
 
-    LoggerMain LOGGER = auth.Logger;
+    LoggerMain LOGGER = Premain.LOGGER;
 
 
 
