@@ -1,7 +1,6 @@
 package org.figrja.combo_auth_ahent.ely.by;
 
-import com.google.gson.Gson;
-import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
+import org.figrja.combo_auth_ahent.Premain;
 import org.figrja.combo_auth_ahent.auth;
 import org.figrja.combo_auth_ahent.config.debuglogger.LoggerMain;
 
@@ -17,7 +16,6 @@ import java.util.Map;
 import java.util.UUID;
 
 public class httpHelper {
-    private static final Gson gson = new Gson();
     static LoggerMain LOGGER;
 
     public httpHelper() {
@@ -63,25 +61,23 @@ public class httpHelper {
             return "";
         } else {
             StringBuilder builder = new StringBuilder();
-            Iterator i$ = query.entrySet().iterator();
 
-            while(i$.hasNext()) {
-                Map.Entry<String, Object> entry = (Map.Entry)i$.next();
+            for (Map.Entry<String, Object> stringObjectEntry : query.entrySet()) {
                 if (builder.length() > 0) {
                     builder.append('&');
                 }
 
                 try {
-                    builder.append(URLEncoder.encode((String)entry.getKey(), "UTF-8"));
+                    builder.append(URLEncoder.encode((String) (stringObjectEntry).getKey(), "UTF-8"));
                 } catch (UnsupportedEncodingException var6) {
                     LOGGER.info("Unexpected exception building query");
                 }
 
-                if (entry.getValue() != null) {
+                if ((stringObjectEntry).getValue() != null) {
                     builder.append('=');
 
                     try {
-                        builder.append(URLEncoder.encode(entry.getValue().toString(), "UTF-8"));
+                        builder.append(URLEncoder.encode((stringObjectEntry).getValue().toString(), "UTF-8"));
                     } catch (UnsupportedEncodingException var5) {
                         LOGGER.info("Unexpected exception building query");
                     }
@@ -101,20 +97,16 @@ public class httpHelper {
     }
 
     public static resultElyGson makeRequest(URL url) throws Exception {
-        try {
-            String jsonResult = getRequest(url);
-            LOGGER.debugRes(jsonResult);
-            resultElyGson result = gson.fromJson(jsonResult, resultElyGson.class);
-            if (result == null) {
-                return null;
-            } else if (result.getError() != null) {
-                return null;
-            } else {
-                result.setId(str2uuid(result.id));
-                return result;
-            }
-        } catch (Exception var3) {
-            throw var3;
+        String jsonResult = getRequest(url);
+        LOGGER.debugRes(jsonResult);
+        resultElyGson result = Premain.fromGson(jsonResult, resultElyGson.class);
+        if (result == null) {
+            return null;
+        } else if (result.getError() != null) {
+            return null;
+        } else {
+            result.setId(str2uuid(result.id));
+            return result;
         }
     }
 

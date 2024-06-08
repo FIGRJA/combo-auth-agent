@@ -1,9 +1,8 @@
 package org.figrja.combo_auth_ahent;
 
 import com.google.gson.Gson;
+import org.figrja.combo_auth_ahent.config.Config;
 import org.figrja.combo_auth_ahent.config.configGson;
-import org.figrja.combo_auth_ahent.config.debuglogger.Debug;
-import org.figrja.combo_auth_ahent.config.debuglogger.DebugAll;
 import org.figrja.combo_auth_ahent.config.debuglogger.Logger;
 import org.figrja.combo_auth_ahent.config.debuglogger.LoggerMain;
 
@@ -16,8 +15,8 @@ public class auth {
     private final Gson gson = new Gson();
     public static LoggerMain Logger = new Logger("combo_auth");
 
-    public void onInitializeServer() {
-        Logger.info("start loading config");
+    public Config onInitializeServer() {
+        Logger.info("loading config");
         File ConfFile = new File("config", "combo_auth.json");
 
         try {
@@ -37,16 +36,8 @@ public class auth {
             }
         }
 
-        if (config.getGebugStatus() != null) {
-            Logger.info(config.getGebugStatus());
-            if (config.getGebugStatus().equals("detail")) {
-                Logger = new Debug("combo_auth");
-            }
 
-            if (config.getGebugStatus().equals("all")) {
-                Logger = new DebugAll("combo_auth");
-            }
-        }
+        return (Config) config;
 
     }
 

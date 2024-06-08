@@ -1,7 +1,7 @@
 package org.figrja.combo_auth_ahent;
 
-import org.figrja.combo_auth_ahent.config.AuthSchemaList;
-import org.figrja.combo_auth_ahent.config.configGson;
+import org.figrja.combo_auth_ahent.config.SchemaList;
+import org.figrja.combo_auth_ahent.config.Config;
 import org.figrja.combo_auth_ahent.config.debuglogger.LoggerMain;
 import org.figrja.combo_auth_ahent.ely.by.httpHelper;
 import org.figrja.combo_auth_ahent.ely.by.propery;
@@ -18,8 +18,8 @@ public class checkauth {
 
     public HashMap<String,Object> AuthListCheck(String profileName, String serverId) throws Exception {
 
-        LoggerMain LOGGER = auth.Logger;
-        configGson CONFIG = auth.getConfig();
+        LoggerMain LOGGER = Premain.LOGGER;
+        Config CONFIG = Premain.config;
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("username", profileName);
         arguments.put("serverId", serverId);
@@ -27,7 +27,7 @@ public class checkauth {
         HashMap<String,Object> result = new HashMap<>();
         for (String name : CONFIG.getAuthList()) {
             LOGGER.debug("try " + name);
-            AuthSchemaList authSchema = CONFIG.getAuthSchema().get(name);
+            SchemaList authSchema = CONFIG.getAuthSchema().get(name);
             LOGGER.debugRes("in " + authSchema.getUrlCheck());
             URL url = httpHelper.concatenateURL(httpHelper.constantURL(authSchema.getUrlCheck()), httpHelper.buildQuery(arguments));
 

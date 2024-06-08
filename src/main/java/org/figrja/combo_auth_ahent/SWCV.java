@@ -1,9 +1,9 @@
 package org.figrja.combo_auth_ahent;
 
 import org.figrja.combo_auth_ahent.config.debuglogger.LoggerMain;
-import org.figrja.org.objectweb.asm.*;
+import org.objectweb.asm.*;
 
-import static org.figrja.org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.Opcodes.*;
 
 
 public class SWCV extends ClassVisitor {
