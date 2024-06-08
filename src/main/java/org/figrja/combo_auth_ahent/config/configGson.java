@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.HashMap;
 import java.util.List;
 
-public class configGson extends Config{
+public class configGson{
     private List<String> AuthList;
     private HashMap<String, AuthSchemaList> AuthSchema;
     private String debug;

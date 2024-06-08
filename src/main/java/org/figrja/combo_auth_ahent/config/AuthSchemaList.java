@@ -3,7 +3,7 @@ package org.figrja.combo_auth_ahent.config;
 import com.google.gson.annotations.SerializedName;
 import org.figrja.combo_auth_ahent.ely.by.propery;
 
-public class AuthSchemaList extends SchemaList{
+public class AuthSchemaList {
     private String url_check;
     private String url_property;
     private propery[] AddProperty;

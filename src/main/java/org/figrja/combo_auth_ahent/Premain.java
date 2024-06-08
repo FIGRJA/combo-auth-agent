@@ -23,14 +23,14 @@ public class Premain implements ClassFileTransformer {
     static LoggerMain LOGGER = new Logger("combo_auth");
     static Config config;
     private static ByteClassLoader myLoader;
-    Instrumentation inst;
 
 
-    public void premain(String args, Instrumentation inst) {
-        this.inst = inst;
+    public static void premain(String args, Instrumentation inst) {
         Map<String,byte[]> map = new HashMap<String, byte[]>();
         String[] urls = {"self","gson-2.10.1.jar","asm-9.2.jar"};
         try {for(String s :urls){
+
+            LOGGER.info(s);
             InputStream resourceAsStream;
             if (s.equals("self")) {
                 resourceAsStream = Premain.class.getProtectionDomain().getCodeSource().getLocation().openStream();
@@ -48,18 +48,21 @@ public class Premain implements ClassFileTransformer {
                     }
                     if (e.getName().endsWith(".class")) {
                         String path = e.getName().substring(0, e.getName().length() - 6).replace('/', '.');
+                        LOGGER.info("   "+path);
                         map.put(path, jarFile.readAllBytes());
                     }
                 }
             }}
             myLoader = new ByteClassLoader(map);
+            LOGGER.info("test");
             String s = "org.figrja.combo_auth_ahent.auth";
             Class<?> aClass = myLoader.findClass(s);
             Constructor constructors = aClass.getConstructor();
             Object o = constructors.newInstance();
             Method method = aClass.getMethod("onInitializeServer");
             config = (Config) method.invoke(o);
-            System.out.println("loadded");
+            LOGGER.info(String.valueOf(config!=null));
+            LOGGER.info("loadded");
         }catch (Throwable e){
             e.printStackTrace();
         }

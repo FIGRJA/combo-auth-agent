@@ -4,14 +4,17 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Config {
-    private List<String> AuthList;
-    private HashMap<String, AuthSchemaList> AuthSchema;
-    private String debug;
+    private final List<String> AuthList;
+    private final HashMap<String, SchemaList> AuthSchema;
+    private final String debug;
 
-    public Config() {
+    public Config(List<String> AuthList, HashMap<String, SchemaList> AuthSchema, String debug) {
+        this.AuthList = AuthList;
+        this.AuthSchema = AuthSchema;
+        this.debug = debug;
     }
 
-    public HashMap<String, AuthSchemaList> getAuthSchema() {
+    public HashMap<String, SchemaList> getAuthSchema() {
         return this.AuthSchema;
     }
 
