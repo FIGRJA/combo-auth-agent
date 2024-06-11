@@ -6,39 +6,47 @@ import org.figrja.combo_auth_ahent.config.debuglogger.DebugAll;
 import org.figrja.combo_auth_ahent.config.debuglogger.Logger;
 import org.figrja.combo_auth_ahent.config.debuglogger.LoggerMain;
 
-import java.io.File;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Files;
 import java.security.ProtectionDomain;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.jar.JarInputStream;
 
 
 public class Premain implements ClassFileTransformer {
-    static LoggerMain LOGGER = new DebugAll("combo_auth");
+
+    private static final URL PATH = Premain.class.getProtectionDomain().getCodeSource().getLocation();
+    static LoggerMain LOGGER = new Logger("combo_auth");
     static Config config;
-    private static ByteClassLoader myLoader;
+    private static URLClassLoader myLoader;
     static Instrumentation ins;
 
-    public static void premain(String args, Instrumentation inst) {
+    public static void premain(String args, Instrumentation inst) throws Throwable {
         ins = inst;
+        String[][] libs = new String[2][7];
+        libs[0] = new String[]{"org", "objectweb", "asm", "asm", "9.2","asm-9.2.jar"};
+        libs[1] = new String[]{"com", "google", "code", "gson", "gson","2.10.1","gson-2.10.1.jar"};
+        LOGGER.info("start load lib");
         try {
-            loadLoader();
-            LOGGER.info("test");
+            loadURLLoader(libs);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            throw e;
+        }
+        LOGGER.info("start load config");
+        try {
             String s = "org.figrja.combo_auth_ahent.auth";
-            Class<?> aClass = myLoader.findClass(s);
+            Class<?> aClass = myLoader.loadClass(s);
             Constructor constructors = aClass.getConstructor();
             Object o = constructors.newInstance();
             Method method = aClass.getMethod("onInitializeServer");
             config = (Config) method.invoke(o);
-            LOGGER.info(String.valueOf(config!=null));
             LOGGER.info("loadded");
         }catch (Throwable e){
             e.printStackTrace();
@@ -62,58 +70,22 @@ public class Premain implements ClassFileTransformer {
 
     }
 
-    private static void loadLoader() throws Throwable{
-        Map<String,byte[]> map = new HashMap<String, byte[]>();
-        String[] urls = {"self","asm-9.2.jar","gson-2.10.1.jar"};
-        for(String s :urls){
-            LOGGER.info(s);
-            InputStream resourceAsStream;
-            if (s.equals("self")) {
-                resourceAsStream = Premain.class.getProtectionDomain().getCodeSource().getLocation().openStream();
-            }else {
-                resourceAsStream = Premain.class.getClassLoader().getResourceAsStream(s);
-            }
-            JarInputStream jarFile;
-            if (resourceAsStream != null) {
-                jarFile = new JarInputStream(resourceAsStream);
-                JarEntry e;
-                while (true) {
-                    e = (JarEntry) jarFile.getNextEntry();
-                    if (e == null) {
-                        break;
-                    }
-                    if (e.getName().endsWith(".class")&&!e.getName().equals("org/igrja/combo_auth_ahent/Premain.class")) {
-                        String path = e.getName().substring(0, e.getName().length() - 6).replace('/', '.');
-                        LOGGER.info("   "+path);
-                        map.put(path, jarFile.readAllBytes());
-                    }
-                }
-            }
-            myLoader = new ByteClassLoader(map);
-    }}
-
     @Override
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer){
         if (Objects.equals(className, "net/md_5/bungee/Bootstrap")){
             System.out.println("not support");
         }
         else if (Objects.equals(className, "net/minecraft/bundler/Main")) {
-            System.out.println("hiii vanila!!");
+            System.out.println("hiii vanila!!!");
 
         }
         else if (Objects.equals(className, "com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService")) {
             try {
-
-                String s = "org.figrja.combo_auth_ahent.ClassTransformer";
-                Class<?> aClass = myLoader.findClass(s);
-                Constructor constructors = aClass.getConstructor();
-                Object o = constructors.newInstance();
-                byte[] bytes = new byte[0];
-                for (Method m: aClass.getMethods()){
-                    if (m.getName().equals("start")){
-                        bytes = (byte[]) m.invoke(o, classfileBuffer);
-                    }
-                }
+                Class<?> mClass = myLoader.loadClass("org.figrja.combo_auth_ahent.ClassTransformer");
+                Constructor mconstructors = mClass.getConstructor();
+                Object mo = mconstructors.newInstance();
+                Method method = mClass.getMethod("start",new Class[]{byte.class});
+                byte[] bytes = (byte[]) method.invoke(mo, new Object[] { classfileBuffer });
                 try {
                     String ss = Premain.class.getProtectionDomain().getCodeSource().getLocation().getFile();
                     File file = new File(ss);
@@ -121,7 +93,7 @@ public class Premain implements ClassFileTransformer {
                     ins.appendToSystemClassLoaderSearch(new JarFile(file));
                 } catch (Throwable e) {
                     e.printStackTrace();
-                }loadLoader();
+                }
                 return bytes;
             } catch (Throwable e) {
                 e.printStackTrace();
@@ -133,7 +105,7 @@ public class Premain implements ClassFileTransformer {
     public static <T> T fromGson(String json, Class<T> classOfT)  {
         try {
             String s = "com.google.gson.Gson";
-            Class<?> aClass = myLoader.findClass(s);
+            Class<?> aClass = myLoader.loadClass(s);
             Constructor constructors = aClass.getConstructor();
             Object o = constructors.newInstance();
             Method method = aClass.getMethod("fromJson");
@@ -142,5 +114,57 @@ public class Premain implements ClassFileTransformer {
             throw new RuntimeException(e);
         }
     }
+
+    static private void CopyResource(String resourceName , String Path) throws IOException {
+        LOGGER.info("create jar : " + resourceName );
+        InputStream stream = null;
+        OutputStream resStreamOut = null;
+        try {
+            stream = Premain.class.getResourceAsStream(resourceName);//note that each / is a directory down in the "jar tree" been the jar the root of the tree
+            int readBytes;
+            byte[] buffer = new byte[4096];
+            resStreamOut = Files.newOutputStream(new File(Path, resourceName).toPath());
+            while ((readBytes = stream.read(buffer)) > 0) {
+                resStreamOut.write(buffer, 0, readBytes);
+            }
+        } finally {
+            stream.close();
+            resStreamOut.close();
+        }
+    }
+
+    static private void loadURLLoader (String[][] names ) throws Throwable{
+        int count = 0;
+        URL[] urls = new URL[names.length];
+        for (String[] lib : names) {
+            URL path = new URL(PATH,"libraries");
+            for (String s:lib){
+                path = new URL(path,s);
+                LOGGER.info(path.getFile());
+            }
+
+            File f = new File(path.getFile());
+
+            if (f.getParentFile().exists()){
+                path = new URL(PATH,"libraries");
+                for (String s:lib){
+                    if (s.endsWith(".jar")) break;
+                    path = new URL(path,s);
+                    new File(path.getFile()).mkdir();
+                    LOGGER.info("create dir : " + s);
+                    LOGGER.info(path.getFile());
+                }
+            }
+            if (f.exists()) {
+                CopyResource(f.getName(),f.getPath());
+
+            }
+            LOGGER.info("load "+f.getName());
+            urls[count] = path;
+            count++;
+        }
+        myLoader = new URLClassLoader("combo-auth",urls,Premain.class.getClassLoader());
+    }
+
 
 }
