@@ -11,9 +11,11 @@ import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.security.ProtectionDomain;
 import java.util.Objects;
 import java.util.jar.JarFile;
@@ -30,7 +32,7 @@ public class Premain implements ClassFileTransformer {
     public static void premain(String args, Instrumentation inst) throws Throwable {
         ins = inst;
         String[][] libs = new String[2][7];
-        libs[0] = new String[]{"org", "objectweb", "asm", "asm", "9.2","asm-9.2.jar"};
+        libs[0] = new String[]{"org", "ow2", "asm", "asm", "9.2","asm-9.2.jar"};
         libs[1] = new String[]{"com", "google", "code", "gson", "gson","2.10.1","gson-2.10.1.jar"};
         LOGGER.info("start load lib");
         try {
@@ -115,16 +117,21 @@ public class Premain implements ClassFileTransformer {
         }
     }
 
-    static private void CopyResource(String resourceName , String Path) throws IOException {
-        LOGGER.info("create jar : " + resourceName );
+    static private void CopyResource(String resourceName , File Path) throws IOException {
+        LOGGER.info("create jar : " + resourceName +" at "+ Path);
         InputStream stream = null;
         OutputStream resStreamOut = null;
         try {
-            stream = Premain.class.getResourceAsStream(resourceName);//note that each / is a directory down in the "jar tree" been the jar the root of the tree
+            stream = Premain.class.getClassLoader().getResourceAsStream(resourceName);//note that each / is a directory down in the "jar tree" been the jar the root of the tree
+            if(stream == null) {
+                LOGGER.info("lol");
+            }
             int readBytes;
             byte[] buffer = new byte[4096];
-            resStreamOut = Files.newOutputStream(new File(Path, resourceName).toPath());
-            while ((readBytes = stream.read(buffer)) > 0) {
+            resStreamOut = Files.newOutputStream(Path.toPath());
+            if(resourceName == null) {
+                LOGGER.info("lol x2");
+            }while ((readBytes = stream.read(buffer)) > 0) {
                 resStreamOut.write(buffer, 0, readBytes);
             }
         } finally {
@@ -137,30 +144,23 @@ public class Premain implements ClassFileTransformer {
         int count = 0;
         URL[] urls = new URL[names.length];
         for (String[] lib : names) {
-            URL path = new URL(PATH,"libraries");
+            File path = new File("libraries");
             for (String s:lib){
-                path = new URL(path,s);
-                LOGGER.info(path.getFile());
-            }
-
-            File f = new File(path.getFile());
-
-            if (f.getParentFile().exists()){
-                path = new URL(PATH,"libraries");
-                for (String s:lib){
-                    if (s.endsWith(".jar")) break;
-                    path = new URL(path,s);
-                    new File(path.getFile()).mkdir();
+                if (!s.endsWith(".jar")&&!path.exists()){
+                    path.mkdir();
                     LOGGER.info("create dir : " + s);
-                    LOGGER.info(path.getFile());
                 }
-            }
-            if (f.exists()) {
-                CopyResource(f.getName(),f.getPath());
+                path = new File(path,s);
 
+                LOGGER.info(path.getCanonicalPath());
+            }
+
+            File f = path;
+            if (!f.exists()) {
+                Files.copy(Premain.class.getClassLoader().getResourceAsStream(f.getName()), f.toPath(), StandardCopyOption.REPLACE_EXISTING);
             }
             LOGGER.info("load "+f.getName());
-            urls[count] = path;
+            urls[count] = new URL(path.getCanonicalPath()) ;
             count++;
         }
         myLoader = new URLClassLoader("combo-auth",urls,Premain.class.getClassLoader());
