@@ -4,8 +4,10 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 public class URLLoader extends URLClassLoader {
-    public URLLoader(URL[] urls) {
-        super(urls);
+
+
+    public URLLoader(URL[] urls, ClassLoader parent) {
+        super(urls, parent);
     }
 
     public Class<?> findClass(String name) throws ClassNotFoundException {

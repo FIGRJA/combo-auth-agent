@@ -87,7 +87,6 @@ public class Premain implements ClassFileTransformer {
                 byte[] bytes = ClassTransformer.start(classfileBuffer);
                 try {
                     ins.appendToBootstrapClassLoaderSearch(new JarFile(file));
-                    ins.appendToSystemClassLoaderSearch(new JarFile(file));
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }
@@ -151,7 +150,7 @@ public class Premain implements ClassFileTransformer {
                 file = f;
             }
 
-            myLoader = new URLLoader(urls);
+            myLoader = new URLLoader(urls,Premain.class.getClassLoader());
         }catch (Throwable e){
             e.printStackTrace();
         }
