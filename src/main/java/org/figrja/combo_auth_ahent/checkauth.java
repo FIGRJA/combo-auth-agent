@@ -75,6 +75,8 @@ public class checkauth {
                 }
             } catch (Exception var17) {
                 var6 = var17;
+            }catch (Throwable e ){
+                e.printStackTrace();
             }
         }
 

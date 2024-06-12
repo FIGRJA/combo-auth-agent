@@ -1,5 +1,6 @@
 package org.figrja.combo_auth_ahent;
 
+import com.google.gson.Gson;
 import org.figrja.combo_auth_ahent.config.Config;
 import org.figrja.combo_auth_ahent.config.debuglogger.Debug;
 import org.figrja.combo_auth_ahent.config.debuglogger.DebugAll;
@@ -13,7 +14,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.security.ProtectionDomain;
@@ -24,7 +24,7 @@ import java.util.jar.JarFile;
 public class Premain implements ClassFileTransformer {
 
 
-    static LoggerMain LOGGER = new Logger("combo_auth");
+    public static LoggerMain LOGGER = new Logger("combo_auth");
     static Config config;
     private static URLLoader myLoader;
     static Instrumentation ins;
@@ -98,15 +98,24 @@ public class Premain implements ClassFileTransformer {
         }
         return classfileBuffer;
     }
+
+
     public static <T> T fromGson(String json, Class<T> classOfT)  {
+        LOGGER.debugRes("start transform");
+        Class<?> aClass = null;
         try {
-            String s = "com.google.gson.Gson";
-            Class<?> aClass = myLoader.findClass(s);
+            String s = "org.figrja.combo_auth_ahent.KOSTblL";
+            aClass = myLoader.findClass(s);
             Constructor constructors = aClass.getConstructor();
             Object o = constructors.newInstance();
-            Method method = aClass.getMethod("fromJson");
+            Method method = null;
+            for (Method m :aClass.getMethods()){
+                if (m.getName().equals("fromGson")) method = m;
+            }
             return (T) method.invoke(o,json,classOfT);
-        } catch (Throwable e) {
+        }
+        catch (Throwable e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }

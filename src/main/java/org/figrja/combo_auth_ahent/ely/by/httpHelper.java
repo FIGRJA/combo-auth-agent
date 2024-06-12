@@ -1,7 +1,6 @@
 package org.figrja.combo_auth_ahent.ely.by;
 
 import org.figrja.combo_auth_ahent.Premain;
-import org.figrja.combo_auth_ahent.auth;
 import org.figrja.combo_auth_ahent.config.debuglogger.LoggerMain;
 
 import java.io.BufferedReader;
@@ -11,12 +10,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
 public class httpHelper {
-    static LoggerMain LOGGER;
+    static LoggerMain LOGGER = Premain.LOGGER;
 
     public httpHelper() {
     }
@@ -115,7 +113,5 @@ public class httpHelper {
         return UUID.fromString(comUUID);
     }
 
-    static {
-        LOGGER = auth.Logger;
-    }
+
 }
