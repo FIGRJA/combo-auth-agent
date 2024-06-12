@@ -3,6 +3,9 @@ package org.figrja.combo_auth_ahent;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
 import com.mojang.authlib.properties.Property;
+import org.figrja.combo_auth_ahent.config.Config;
+import org.figrja.combo_auth_ahent.config.debuglogger.Logger;
+import org.figrja.combo_auth_ahent.config.debuglogger.LoggerMain;
 import org.figrja.combo_auth_ahent.ely.by.propery;
 
 import java.net.InetAddress;
@@ -11,6 +14,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class KOSTblL {
+    static Config config;
 
     public GameProfile hasServerJoined(GameProfile user, String serverId , InetAddress address) throws AuthenticationUnavailableException {
         HashMap<String,Object> result;

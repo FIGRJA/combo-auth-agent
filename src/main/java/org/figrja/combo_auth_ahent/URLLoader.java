@@ -9,7 +9,6 @@ public class URLLoader extends URLClassLoader {
     }
 
     public Class<?> findClass(String name) throws ClassNotFoundException {
-        System.out.println(name);
-        return  super.findClass(name);
+        return super.findClass(name);
     }
 }

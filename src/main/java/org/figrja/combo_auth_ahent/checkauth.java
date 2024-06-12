@@ -15,11 +15,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class checkauth {
+    static LoggerMain LOGGER = Premain.LOGGER;
+    static Config CONFIG = Premain.config;
 
     public HashMap<String,Object> AuthListCheck(String profileName, String serverId) throws Exception {
-
-        LoggerMain LOGGER = Premain.LOGGER;
-        Config CONFIG = Premain.config;
+        if (CONFIG == null){
+            Premain.newClass();
+            new Premain();
+            LOGGER = Premain.LOGGER;
+            CONFIG = Premain.config;
+        }
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("username", profileName);
         arguments.put("serverId", serverId);
