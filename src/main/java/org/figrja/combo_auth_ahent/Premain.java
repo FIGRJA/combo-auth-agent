@@ -59,6 +59,7 @@ public class Premain implements ClassFileTransformer {
         }
     }
     public static void newClass(){
+        LOGGER.info("first authentication");
         in = true;
     }
 
@@ -66,8 +67,6 @@ public class Premain implements ClassFileTransformer {
         ins = inst;
 
         inst.addTransformer(new Premain());
-
-
 
     }
 

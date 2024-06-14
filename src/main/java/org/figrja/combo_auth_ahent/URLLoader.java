@@ -7,7 +7,7 @@ public class URLLoader extends URLClassLoader {
 
 
     public URLLoader(URL[] urls, ClassLoader parent) {
-        super(urls, parent);
+        super("combo-auth",urls, parent);
     }
 
     public Class<?> findClass(String name) throws ClassNotFoundException {
