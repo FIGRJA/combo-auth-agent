@@ -1,22 +1,23 @@
 package org.figrja.combo_auth_ahent;
 
+import com.google.gson.Gson;
 import org.figrja.combo_auth_ahent.config.SchemaList;
 import org.figrja.combo_auth_ahent.config.Config;
 import org.figrja.combo_auth_ahent.config.debuglogger.LoggerMain;
+import org.figrja.combo_auth_ahent.ely.by.LoginResultGson;
 import org.figrja.combo_auth_ahent.ely.by.httpHelper;
 import org.figrja.combo_auth_ahent.ely.by.propery;
 import org.figrja.combo_auth_ahent.ely.by.resultElyGson;
 
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class checkauth {
     static LoggerMain LOGGER = Premain.LOGGER;
     static Config CONFIG = Premain.config;
+
+    static Object gson = Premain.gson;
 
     public HashMap<String,Object> AuthListCheck(String profileName, String serverId) throws Exception {
         if (CONFIG == null){
@@ -85,5 +86,27 @@ public class checkauth {
         }
         return null;
 
+    }
+
+    public static void reBuildResult(String result , Throwable error){
+        if (gson==null){
+            Premain.gson = new Gson();
+            gson = Premain.gson;
+        }
+        if (error!=null) {
+            String[] sp = result.split("=");
+            String name = sp[1].split("&")[0];
+            String serverId = sp[2].split("&")[0];
+            try {
+                HashMap<String, Object> map = new checkauth().AuthListCheck(name, serverId);
+                LoginResultGson loginResultGson = new LoginResultGson(((UUID) map.get("id")).toString(), (String) map.get("name"), (propery[]) ((ArrayList<propery>) map.get("properties")).toArray());
+                error = null;
+                result = ((Gson)gson).toJson(loginResultGson);
+            } catch (Exception e) {
+                error = e;
+            }
+        }else {
+            Premain.LOGGER.info("result is not null -> combo-auth not used");
+        }
     }
 }

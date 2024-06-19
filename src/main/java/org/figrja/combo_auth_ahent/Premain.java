@@ -26,6 +26,8 @@ public class Premain implements ClassFileTransformer {
 
     public static LoggerMain LOGGER = new Logger("combo_auth");
     static Config config;
+
+    static Object gson;
     private static URLLoader myLoader;
     static Instrumentation ins;
 
@@ -79,7 +81,7 @@ public class Premain implements ClassFileTransformer {
             System.out.println("hiii vanila!!!");
 
         }
-        else if (Objects.equals(className, "com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService")) {
+        else if (Objects.equals(className, "com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService")||Objects.equals(className, "net/md_5/bungee/connection/InitialHandler")) {
 
             try {
 
