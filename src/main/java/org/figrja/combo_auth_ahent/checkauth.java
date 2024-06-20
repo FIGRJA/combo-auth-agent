@@ -1,6 +1,5 @@
 package org.figrja.combo_auth_ahent;
 
-import com.google.gson.Gson;
 import org.figrja.combo_auth_ahent.config.SchemaList;
 import org.figrja.combo_auth_ahent.config.Config;
 import org.figrja.combo_auth_ahent.config.debuglogger.LoggerMain;
@@ -16,8 +15,9 @@ import java.util.*;
 public class checkauth {
     static LoggerMain LOGGER = Premain.LOGGER;
     static Config CONFIG = Premain.config;
+    static String serverid;
+    static String name;
 
-    static Object gson = Premain.gson;
 
     public HashMap<String,Object> AuthListCheck(String profileName, String serverId) throws Exception {
         if (CONFIG == null){
@@ -89,24 +89,20 @@ public class checkauth {
     }
 
     public static void reBuildResult(String result , Throwable error){
-        if (gson==null){
-            Premain.gson = new Gson();
-            gson = Premain.gson;
+        LOGGER.info("been "+name+" + "+serverid);
+        try {
+            HashMap<String, Object> map = new checkauth().AuthListCheck(name, serverid);
+            LoginResultGson loginResultGson = new LoginResultGson(((UUID) map.get("id")).toString(), (String) map.get("name"), (propery[]) ((ArrayList<propery>) map.get("properties")).toArray());
+            error = null;
+            result = Premain.toGson(loginResultGson);
+        } catch (Exception e) {
+            error = e;
         }
-        if (error!=null) {
-            String[] sp = result.split("=");
-            String name = sp[1].split("&")[0];
-            String serverId = sp[2].split("&")[0];
-            try {
-                HashMap<String, Object> map = new checkauth().AuthListCheck(name, serverId);
-                LoginResultGson loginResultGson = new LoginResultGson(((UUID) map.get("id")).toString(), (String) map.get("name"), (propery[]) ((ArrayList<propery>) map.get("properties")).toArray());
-                error = null;
-                result = ((Gson)gson).toJson(loginResultGson);
-            } catch (Exception e) {
-                error = e;
-            }
-        }else {
-            Premain.LOGGER.info("result is not null -> combo-auth not used");
-        }
+
+    }
+    public static void setSettings(String name, String serverid){
+        LOGGER.info("set "+name+" + "+serverid);
+        checkauth.name = name;
+        checkauth.serverid = serverid;
     }
 }

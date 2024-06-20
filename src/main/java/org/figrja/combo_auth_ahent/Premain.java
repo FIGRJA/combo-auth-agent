@@ -12,7 +12,6 @@ import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -27,8 +26,8 @@ public class Premain implements ClassFileTransformer {
     public static LoggerMain LOGGER = new Logger("combo_auth");
     static Config config;
 
-    static Object gson;
     private static URLLoader myLoader;
+    private static Class<?> kostbll;
     static Instrumentation ins;
 
     static  File file;
@@ -75,13 +74,14 @@ public class Premain implements ClassFileTransformer {
     @Override
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer){
         if (Objects.equals(className, "net/md_5/bungee/Bootstrap")){
-            System.out.println("not support");
+            LOGGER.info("try work with it");
         }
         else if (Objects.equals(className, "net/minecraft/bundler/Main")) {
-            System.out.println("hiii vanila!!!");
+            LOGGER.info("hiii vanila!!!");
 
         }
-        else if (Objects.equals(className, "com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService")||Objects.equals(className, "net/md_5/bungee/connection/InitialHandler")) {
+        else if (Objects.equals(className, "com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService")||
+                Objects.equals(className, "net/md_5/bungee/connection/InitialHandler")) {
 
             try {
 
@@ -96,6 +96,15 @@ public class Premain implements ClassFileTransformer {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
+        }else if (Objects.equals(className, "net/md_5/bungee/connection/InitialHandler$5")) {
+
+            try {
+
+                return ClassTransformer.start(classfileBuffer);
+            } catch (Throwable e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
         }
         return classfileBuffer;
     }
@@ -103,17 +112,39 @@ public class Premain implements ClassFileTransformer {
 
     public static <T> T fromGson(String json, Class<T> classOfT)  {
         LOGGER.debugRes("start transform");
-        Class<?> aClass = null;
         try {
-            String s = "org.figrja.combo_auth_ahent.KOSTblL";
-            aClass = myLoader.findClass(s);
-            Constructor constructors = aClass.getConstructor();
+            if (kostbll ==null) {
+                String s = "org.figrja.combo_auth_ahent.KOSTblL";
+                kostbll = myLoader.findClass(s);
+            }
+            Constructor constructors = kostbll.getConstructor();
             Object o = constructors.newInstance();
             Method method = null;
-            for (Method m :aClass.getMethods()){
+            for (Method m :kostbll.getMethods()){
                 if (m.getName().equals("fromGson")) method = m;
             }
             return (T) method.invoke(o,json,classOfT);
+        }
+        catch (Throwable e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+    public static String toGson(Object json)  {
+        LOGGER.debugRes("start transform");
+        Class<?> aClass = null;
+        try {
+            if (kostbll ==null) {
+                String s = "org.figrja.combo_auth_ahent.KOSTblL";
+                kostbll = myLoader.findClass(s);
+            }
+            Constructor constructors = kostbll.getConstructor();
+            Object o = constructors.newInstance();
+            Method method = null;
+            for (Method m :kostbll.getMethods()){
+                if (m.getName().equals("toGson")) method = m;
+            }
+            return (String) method.invoke(o,json);
         }
         catch (Throwable e) {
             e.printStackTrace();
