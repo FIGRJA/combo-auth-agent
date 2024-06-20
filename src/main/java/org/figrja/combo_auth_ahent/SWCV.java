@@ -13,7 +13,7 @@ public class SWCV extends ClassVisitor {
     }
 
 
-    LoggerMain LOGGER = Premain.LOGGER;
+    static LoggerMain LOGGER = Premain.LOGGER;
 
 
 
@@ -50,12 +50,55 @@ public class SWCV extends ClassVisitor {
 
             LOGGER.debug("insert our method");
             return new EXT(cv.visitMethod(access, name, desc, signature, exceptions),version);
-        } else if (name.equals("handle")&&desc.equals("(Lnet/md_5/bungee/protocol/packet/EncryptionResponse)V;")) {
-            LOGGER.info("wow it is a HANDLE");
+        } else if (name.equals("done")&&desc.equals("(Ljava/lang/String;Ljava/lang/Throwable;)V")) {
+            return new startWith(cv.visitMethod(access, name, desc, signature, exceptions));
+        }else if (name.equals("handle")&&desc.equals("(Lnet/md_5/bungee/protocol/packet/EncryptionResponse;)V")){
+            return new endWith(cv.visitMethod(access, name, desc, signature, exceptions));
         }
         return cv.visitMethod(access, name, desc, signature, exceptions);
 
     }
+
+    private static class startWith extends MethodVisitor{
+        public startWith( MethodVisitor methodVisitor) {
+            super(ASM9, methodVisitor);
+        }
+
+        public void visitCode(){
+            mv.visitCode();
+            Label insert = new Label();
+            mv.visitLabel(insert);
+            mv.visitVarInsn(ALOAD,1);
+            mv.visitMethodInsn(INVOKESTATIC,"org/figrja/combo_auth_ahent/checkauth","reBuildResult","(Ljava/lang/String;)Ljava/lang/String;",false);
+            mv.visitVarInsn(ASTORE,1);
+            mv.visitMethodInsn(INVOKESTATIC,"org/figrja/combo_auth_ahent/checkauth","getError","()Ljava/lang/Throwable;",false);
+            mv.visitVarInsn(ASTORE,2);
+        }
+
+    }
+
+    private static class endWith extends MethodVisitor{
+        public endWith( MethodVisitor methodVisitor) {
+            super(ASM9, methodVisitor);
+        }
+
+        @Override
+        public void visitInsn(final int opcode) {
+
+            if (mv != null) {
+                if (opcode == RETURN) {
+                    LOGGER.info("insert");
+                    mv.visitVarInsn(ALOAD, 5);
+                    mv.visitVarInsn(ALOAD, 7);
+                    mv.visitMethodInsn(INVOKESTATIC, "org/figrja/combo_auth_ahent/checkauth", "setSettings", "(Ljava/lang/String;Ljava/lang/String;)V", false);
+
+                }
+                mv.visitInsn(opcode);
+            }
+        }
+
+    }
+
 
     public static class EXT extends MethodVisitor{
         int version;

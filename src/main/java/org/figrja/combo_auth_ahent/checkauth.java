@@ -88,20 +88,40 @@ public class checkauth {
 
     }
 
-    public static void reBuildResult(String result , Throwable error){
-        LOGGER.info("been "+name+" + "+serverid);
+    static Throwable error;
+
+    public static String reBuildResult(String result){
+        LOGGER.debugRes("been "+name+" + "+serverid);
         try {
             HashMap<String, Object> map = new checkauth().AuthListCheck(name, serverid);
-            LoginResultGson loginResultGson = new LoginResultGson(((UUID) map.get("id")).toString(), (String) map.get("name"), (propery[]) ((ArrayList<propery>) map.get("properties")).toArray());
-            error = null;
-            result = Premain.toGson(loginResultGson);
+
+            propery[] properies = new propery[((ArrayList<propery>) map.get("properties")).size()];
+            for (int i = 0 ;i<((ArrayList<propery>) map.get("properties")).size();i++){
+                properies[i] = ((ArrayList<propery>) map.get("properties")).get(i);
+            }
+            String uuid = ((UUID) map.get("id")).toString();
+            StringBuilder id = new StringBuilder();
+            for (String s:uuid.split("-")){
+                id.append(s);
+            }
+            LoginResultGson loginResultGson = new LoginResultGson(id.toString(), (String) map.get("name"), properies);
+            checkauth.error = null;
+            String s = Premain.toGson(loginResultGson);
+            LOGGER.debugRes(s);
+            return s;
         } catch (Exception e) {
-            error = e;
+            checkauth.error = e;
         }
+        return result;
 
     }
+
+    public static Throwable getError() {
+        return error;
+    }
+
     public static void setSettings(String name, String serverid){
-        LOGGER.info("set "+name+" + "+serverid);
+        LOGGER.debugRes("set "+name+" + "+serverid);
         checkauth.name = name;
         checkauth.serverid = serverid;
     }
