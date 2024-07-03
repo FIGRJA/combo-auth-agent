@@ -62,6 +62,7 @@ public class Premain implements ClassFileTransformer {
     public static void newClass(){
         LOGGER.info("first authentication");
         in = true;
+
     }
 
     public static void premain(String args, Instrumentation inst){
