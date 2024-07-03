@@ -40,6 +40,13 @@
             <version>9.2</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com</groupId>
+            <artifactId>velocitypowered</artifactId>
+            <version>3.3.0</version>
+            <systemPath>D:/Desktop/s1/mods/combo-auth-agent/velocity-3.3.0-SNAPSHOT-400.jar</systemPath>
+            <scope>system</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

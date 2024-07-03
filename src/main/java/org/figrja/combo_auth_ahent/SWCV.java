@@ -14,6 +14,7 @@ public class SWCV extends ClassVisitor {
 
 
     static LoggerMain LOGGER = Premain.LOGGER;
+    boolean needLamdaLOL0 = false;
 
 
 
@@ -54,9 +55,99 @@ public class SWCV extends ClassVisitor {
             return new startWith(cv.visitMethod(access, name, desc, signature, exceptions));
         }else if (name.equals("handle")&&desc.equals("(Lnet/md_5/bungee/protocol/packet/EncryptionResponse;)V")){
             return new endWith(cv.visitMethod(access, name, desc, signature, exceptions));
+        }else if (name.equals("handle")&&desc.equals("(Lcom/velocitypowered/proxy/protocol/packet/EncryptionResponsePacket;)Z")){
+            needLamdaLOL0 = true;
+            return new insertURL(cv.visitMethod(access, name, desc, signature, exceptions));
         }
         return cv.visitMethod(access, name, desc, signature, exceptions);
 
+    }
+
+    private static class lamda_lol_0 extends MethodVisitor{
+        public lamda_lol_0( MethodVisitor methodVisitor) {
+            super(ASM9, methodVisitor);
+        }
+
+        @Override
+        public void visitCode() {
+            //thx @konloch for bytecode viewer 2.12
+            mv.visitCode();
+            Label label0 = new Label();
+            mv.visitLabel(label0);
+            mv.visitFieldInsn(GETSTATIC, "com/velocitypowered/proxy/VelocityServer", "GENERAL_GSON", "Lcom/google/gson/Gson;");
+            mv.visitInsn(ACONST_NULL);
+            mv.visitMethodInsn(INVOKESTATIC, "org/figrja/combo_auth_ahent/checkauth", "reBuildResult", "(Ljava/lang/String;)Ljava/lang/String;", false);
+            mv.visitLdcInsn(Type.getType("Lcom/velocitypowered/api/util/GameProfile;"));
+            mv.visitMethodInsn(INVOKEVIRTUAL, "com/google/gson/Gson", "fromJson", "(Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;", false);
+            mv.visitTypeInsn(CHECKCAST, "com/velocitypowered/api/util/GameProfile");
+            mv.visitVarInsn(ASTORE, 1);
+            Label label1 = new Label();
+            mv.visitLabel(label1);
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitFieldInsn(GETFIELD, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "mcConnection", "Lcom/velocitypowered/proxy/connection/MinecraftConnection;");
+            mv.visitFieldInsn(GETSTATIC, "com/velocitypowered/proxy/protocol/StateRegistry", "LOGIN", "Lcom/velocitypowered/proxy/protocol/StateRegistry;");
+            mv.visitTypeInsn(NEW, "com/velocitypowered/proxy/connection/client/AuthSessionHandler");
+            mv.visitInsn(DUP);
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitFieldInsn(GETFIELD, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "server", "Lcom/velocitypowered/proxy/VelocityServer;");
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitFieldInsn(GETFIELD, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "inbound", "Lcom/velocitypowered/proxy/connection/client/LoginInboundConnection;");
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitInsn(ICONST_1);
+            mv.visitMethodInsn(INVOKESPECIAL, "com/velocitypowered/proxy/connection/client/AuthSessionHandler", "<init>", "(Lcom/velocitypowered/proxy/VelocityServer;Lcom/velocitypowered/proxy/connection/client/LoginInboundConnection;Lcom/velocitypowered/api/util/GameProfile;Z)V", false);
+            mv.visitMethodInsn(INVOKEVIRTUAL, "com/velocitypowered/proxy/connection/MinecraftConnection", "setActiveSessionHandler", "(Lcom/velocitypowered/proxy/protocol/StateRegistry;Lcom/velocitypowered/proxy/connection/MinecraftSessionHandler;)V", false);
+            Label label2 = new Label();
+            mv.visitLabel(label2);
+            mv.visitInsn(RETURN);
+            mv.visitEnd();
+        }
+    }
+
+    private static class insertURL extends MethodVisitor{
+        public insertURL( MethodVisitor methodVisitor) {
+            super(ASM9, methodVisitor);
+        }
+        Label URL;
+        int index;
+
+        public void visitLocalVariable(
+                final String name,
+                final String descriptor,
+                final String signature,
+                final Label start,
+                final Label end,
+                final int index) {
+            if (name.equals("url")){
+                URL = start;
+                this.index = index;
+            }
+            mv.visitLocalVariable(name, descriptor, signature, start, end, index);
+        }
+
+        public void visitLabel(final Label label){
+            if (label == URL){
+                //thx @konloch for bytecode viewer 2.12
+                Label labell0 = new Label();
+                mv.visitLabel(labell0);
+                mv.visitVarInsn(ALOAD,index);
+                mv.visitMethodInsn(INVOKESTATIC,"org/figrja/combo_auth_ahent/checkauth","setSettings","(Ljava/net/URL;)V",false);
+                Label labell1 = new Label();
+                mv.visitLabel(labell1);
+                mv.visitTypeInsn(NEW, "java/lang/Thread");
+                mv.visitInsn(DUP);
+                mv.visitVarInsn(ALOAD, 0);
+                mv.visitInvokeDynamicInsn("run", "(Lcom/velocitypowered/proxy/connection/client/handle;)Ljava/lang/Runnable;", new Handle(Opcodes.H_INVOKESTATIC, "java/lang/invoke/LambdaMetafactory", "metafactory", "(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;", false), new Object[]{Type.getType("()V"), new Handle(Opcodes.H_INVOKESPECIAL, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "lambda$lol$0", "()V", false), Type.getType("()V")});
+                mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Thread", "<init>", "(Ljava/lang/Runnable;)V", false);
+                Label labell2 = new Label();
+                mv.visitLabel(labell2);
+                mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Thread", "start", "()V", false);
+                Label labell3 = new Label();
+                mv.visitLabel(labell3);
+                mv.visitInsn(ICONST_1);
+                mv.visitInsn(IRETURN);
+            }
+            mv.visitLabel(label);
+        }
     }
 
     private static class startWith extends MethodVisitor{
@@ -267,6 +358,8 @@ public class SWCV extends ClassVisitor {
 
     @Override
     public void visitEnd() {
+        MethodVisitor mv = new lamda_lol_0(cv.visitMethod(ACC_PRIVATE | ACC_SYNTHETIC, "lambda$lol$0", "()V", null, null));
+        //toListMethodNode.accept(mv);
         LOGGER.debug("end visit");
         cv.visitEnd();
     }

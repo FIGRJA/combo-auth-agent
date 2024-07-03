@@ -74,7 +74,8 @@ public class Premain implements ClassFileTransformer {
 
     @Override
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer){
-        if (Objects.equals(className, "net/md_5/bungee/Bootstrap")){
+        if (Objects.equals(className, "net/md_5/bungee/Bootstrap")||
+                Objects.equals(className, "com/velocitypowered/proxy/Velocity")){
             LOGGER.info("try work with it");
         }
         else if (Objects.equals(className, "net/minecraft/bundler/Main")) {
@@ -82,7 +83,8 @@ public class Premain implements ClassFileTransformer {
 
         }
         else if (Objects.equals(className, "com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService")||
-                Objects.equals(className, "net/md_5/bungee/connection/InitialHandler")) {
+                Objects.equals(className, "net/md_5/bungee/connection/InitialHandler")||
+                Objects.equals(className, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler")) {
 
             try {
 

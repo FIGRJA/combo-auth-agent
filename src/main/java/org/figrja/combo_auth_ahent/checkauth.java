@@ -153,5 +153,16 @@ public class checkauth {
         LOGGER.debugRes("set "+name+" + "+serverid);
         checkauth.profileName = name;
         checkauth.serverid = serverid;
+    }public static void setSettings(URL url){
+        String[] surl = url.getQuery().split("&");
+        for (String s:surl){
+            if (s.startsWith("username=")){
+                checkauth.profileName = s.split("=")[1];
+            } else if (s.startsWith("serverId=")) {
+                checkauth.serverid = s.split("=")[1];
+            }
+        }
+        
+
     }
 }
