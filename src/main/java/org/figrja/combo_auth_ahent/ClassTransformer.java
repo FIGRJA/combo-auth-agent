@@ -28,7 +28,7 @@ public class ClassTransformer {
     private static byte[] trans(ClassReader classReader){
         LOGGER.info("try");
         try {
-            ClassWriter classWriter = new ClassWriter(classReader,1);
+            ClassWriter classWriter = new ClassWriter(classReader,ClassWriter.COMPUTE_FRAMES);
             SWCV classVisitor = new SWCV(ASM9, classWriter);
             classReader.accept(classVisitor, 0);
 

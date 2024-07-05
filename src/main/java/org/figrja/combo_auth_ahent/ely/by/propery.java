@@ -27,5 +27,4 @@ public class propery {
         this.value = value;
         this.signature = signature;
     }
-    public propery(){}
 }

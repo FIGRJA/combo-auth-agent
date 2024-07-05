@@ -106,7 +106,11 @@ public class checkauth {
                     LOGGER.debug("add custom property");
                     properties.addAll(Arrays.asList(authSchema.getAddProperty()));
                 }
-                result.put("properties",properties);
+                ArrayList<String[]> strings = new ArrayList<>();
+                for (propery p:properties){
+                    strings.add(new String[]{p.name(),p.value(),p.signature()});
+                }
+                result.put("properties",strings);
 
                 LOGGER.info("logging from " + name);
                 return result;
@@ -124,9 +128,10 @@ public class checkauth {
         try {
             HashMap<String, Object> map = new checkauth().AuthListCheck(profileName, serverid);
 
-            propery[] properies = new propery[((ArrayList<propery>) map.get("properties")).size()];
-            for (int i = 0 ;i<((ArrayList<propery>) map.get("properties")).size();i++){
-                properies[i] = ((ArrayList<propery>) map.get("properties")).get(i);
+            propery[] properies = new propery[((ArrayList<String[]>) map.get("properties")).size()];
+            for (int i = 0 ;i<((ArrayList<String[]>) map.get("properties")).size();i++){
+                String[] propery = ((ArrayList<String[]>) map.get("properties")).get(i);
+                properies[i] = new propery(propery[0],propery[1],propery[2]);
             }
             String uuid = ((UUID) map.get("id")).toString();
             StringBuilder id = new StringBuilder();
@@ -153,8 +158,9 @@ public class checkauth {
         LOGGER.debugRes("set "+name+" + "+serverid);
         checkauth.profileName = name;
         checkauth.serverid = serverid;
-    }public static void setSettings(URL url){
-        String[] surl = url.getQuery().split("&");
+    }
+    public static void setSettings(String url){
+        String[] surl = url.split("&");
         for (String s:surl){
             if (s.startsWith("username=")){
                 checkauth.profileName = s.split("=")[1];
@@ -162,6 +168,8 @@ public class checkauth {
                 checkauth.serverid = s.split("=")[1];
             }
         }
+
+        LOGGER.debugRes("set "+profileName+" + "+serverid);
         
 
     }
