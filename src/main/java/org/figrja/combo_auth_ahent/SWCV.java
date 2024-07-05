@@ -114,15 +114,13 @@ public class SWCV extends ClassVisitor {
                 mv.visitMethodInsn(INVOKESTATIC, "org/figrja/combo_auth_ahent/checkauth", "setSettings", "(Ljava/lang/String;)V", false);
                 Label label3 = new Label();
                 mv.visitLabel(label3);
-                mv.visitTypeInsn(NEW, "java/lang/Thread");
-                mv.visitInsn(DUP);
                 mv.visitVarInsn(ALOAD, 0);
                 mv.visitVarInsn(ALOAD, 4);
-                mv.visitInvokeDynamicInsn("run", "(Lcom/velocitypowered/proxy/connection/client/InitialLoginSessionHandler;[B)Ljava/lang/Runnable;", new Handle(Opcodes.H_INVOKESTATIC, "java/lang/invoke/LambdaMetafactory", "metafactory", "(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;", false), new Object[]{Type.getType("()V"), new Handle(Opcodes.H_INVOKESPECIAL, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "lambda$handle$80", "([B)V", false), Type.getType("()V")});
-                mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Thread", "<init>", "(Ljava/lang/Runnable;)V", false);
+                mv.visitInvokeDynamicInsn("run", "(Lcom/velocitypowered/proxy/connection/client/InitialLoginSessionHandler;[B)Ljava/lang/Runnable;", new Handle(Opcodes.H_INVOKESTATIC, "java/lang/invoke/LambdaMetafactory", "metafactory", "(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;", false), new Object[]{Type.getType("()V"), new Handle(Opcodes.H_INVOKESPECIAL, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "lambda$handle$0", "([B)V", false), Type.getType("()V")});
                 Label label4 = new Label();
                 mv.visitLabel(label4);
-                mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Thread", "start", "()V", false);
+                mv.visitMethodInsn(INVOKESTATIC, "java/util/concurrent/CompletableFuture", "runAsync", "(Ljava/lang/Runnable;)Ljava/util/concurrent/CompletableFuture;", false);
+                mv.visitVarInsn(ASTORE, 4);
                 Label label5 = new Label();
                 mv.visitLabel(label5);
                 mv.visitInsn(ICONST_1);
@@ -197,6 +195,8 @@ public class SWCV extends ClassVisitor {
             mv.visitInsn(DUP);
             mv.visitMethodInsn(INVOKESPECIAL, "org/figrja/combo_auth_ahent/checkauth", "<init>", "()V", false);
             mv.visitVarInsn(ALOAD, 1);
+            if (version == 0) {
+                mv.visitMethodInsn(INVOKEVIRTUAL, "com/mojang/authlib/GameProfile", "getName", "()Ljava/lang/String;",false);}
             mv.visitVarInsn(ALOAD, 2);
             mv.visitMethodInsn(INVOKEVIRTUAL, "org/figrja/combo_auth_ahent/checkauth", "AuthListCheck", "(Ljava/lang/String;Ljava/lang/String;)Ljava/util/HashMap;", false);
             mv.visitVarInsn(ASTORE, 4);
@@ -278,15 +278,18 @@ public class SWCV extends ClassVisitor {
             mv.visitJumpInsn(GOTO, label11);
             mv.visitLabel(label9);
             mv.visitFrame(Opcodes.F_NEW, 7, new Object[] {"com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService", "java/lang/String", "java/lang/String", "java/net/InetAddress", "java/util/HashMap", "com/mojang/authlib/GameProfile", "java/util/ArrayList"}, 0, new Object[] {});
-            mv.visitTypeInsn(NEW, "com/mojang/authlib/yggdrasil/ProfileResult");
-            mv.visitInsn(DUP);
+            if (version == 1) {
+                mv.visitTypeInsn(NEW, "com/mojang/authlib/yggdrasil/ProfileResult");
+                mv.visitInsn(DUP);
+            }
             mv.visitVarInsn(ALOAD, 5);
-            mv.visitVarInsn(ALOAD, 4);
-            mv.visitLdcInsn("actions");
-            mv.visitMethodInsn(INVOKEVIRTUAL, "java/util/HashMap", "get", "(Ljava/lang/Object;)Ljava/lang/Object;", false);
-            mv.visitTypeInsn(CHECKCAST, "java/util/Set");
-            mv.visitMethodInsn(INVOKESPECIAL, "com/mojang/authlib/yggdrasil/ProfileResult", "<init>", "(Lcom/mojang/authlib/GameProfile;Ljava/util/Set;)V", false);
-            mv.visitLabel(label4);
+            if (version == 1) {
+                mv.visitVarInsn(ALOAD, 4);
+                mv.visitLdcInsn("actions");
+                mv.visitMethodInsn(INVOKEVIRTUAL, "java/util/HashMap", "get", "(Ljava/lang/Object;)Ljava/lang/Object;", false);
+                mv.visitTypeInsn(CHECKCAST, "java/util/Set");
+                mv.visitMethodInsn(INVOKESPECIAL, "com/mojang/authlib/yggdrasil/ProfileResult", "<init>", "(Lcom/mojang/authlib/GameProfile;Ljava/util/Set;)V", false);
+            }mv.visitLabel(label4);
             mv.visitInsn(ARETURN);
             mv.visitLabel(label2);
             mv.visitFrame(Opcodes.F_NEW, 4, new Object[] {"com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService", "java/lang/String", "java/lang/String", "java/net/InetAddress"}, 1, new Object[] {"java/lang/Exception"});

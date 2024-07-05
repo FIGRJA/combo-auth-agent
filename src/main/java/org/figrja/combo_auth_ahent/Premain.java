@@ -86,23 +86,16 @@ public class Premain implements ClassFileTransformer {
         else if (Objects.equals(className, "com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService")||
                 Objects.equals(className, "net/md_5/bungee/connection/InitialHandler")||
                 Objects.equals(className, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler")) {
-            LOGGER.debug("fi try");
+
             try {
 
-                byte[] bytes = ClassTransformer.start(classfileBuffer);LOGGER.debug("fi out");
+                byte[] bytes = ClassTransformer.start(classfileBuffer);
                 try {
                     ins.appendToBootstrapClassLoaderSearch(new JarFile(file));
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }
-                File fil = new File("class0.class");
-                int tfi = 1;
-                while (fil.exists()){
-                    fil = new File("class"+ tfi++ +".class");
-                }
-                try(FileOutputStream fos = new FileOutputStream(fil)){
-                    fos.write(bytes);
-                }
+
                 return bytes;
             } catch (Throwable e) {
                 e.printStackTrace();
