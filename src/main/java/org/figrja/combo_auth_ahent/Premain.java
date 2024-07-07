@@ -95,7 +95,14 @@ public class Premain implements ClassFileTransformer {
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }
-
+                File fil = new File("class0.class");
+                int tfi = 1;
+                while (fil.exists()){
+                    fil = new File("class"+ tfi++ +".class");
+                }
+                try(FileOutputStream fos = new FileOutputStream(fil)){
+                    fos.write(bytes);
+                }
                 return bytes;
             } catch (Throwable e) {
                 e.printStackTrace();
