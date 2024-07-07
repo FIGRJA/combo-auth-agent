@@ -94,7 +94,7 @@ public class Premain implements ClassFileTransformer {
                     ins.appendToBootstrapClassLoaderSearch(new JarFile(file));
                 } catch (Throwable e) {
                     e.printStackTrace();
-                }
+                }/*
                 File fil = new File("class0.class");
                 int tfi = 1;
                 while (fil.exists()){
@@ -102,7 +102,7 @@ public class Premain implements ClassFileTransformer {
                 }
                 try(FileOutputStream fos = new FileOutputStream(fil)){
                     fos.write(bytes);
-                }
+                }*/
                 return bytes;
             } catch (Throwable e) {
                 e.printStackTrace();
@@ -169,8 +169,8 @@ public class Premain implements ClassFileTransformer {
     static private void loadURLLoader (){
         String[][] names = new String[3][7];
         names[0] = new String[]{"com", "google", "code", "gson", "gson","2.10.1","gson-2.10.1.jar"};
-        names[1] = new String[]{"org", "figrja", "combo-auth","1.3.0","combo-auth-cut.jar"};
-        if (!in)names[2] = new String[]{"org", "figrja", "combo-auth","1.3.0","combo-auth.jar"};
+        names[1] = new String[]{"org", "figrja", "combo-auth","1.4.0","combo-auth-cut.jar"};
+        if (!in)names[2] = new String[]{"org", "figrja", "combo-auth","1.4.0","combo-auth.jar"};
         try{
             int count = 0;
             URL[] urls;

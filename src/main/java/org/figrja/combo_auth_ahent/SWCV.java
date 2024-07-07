@@ -53,22 +53,19 @@ public class SWCV extends ClassVisitor {
             LOGGER.debug("insert our method");
             return new EXT(cv.visitMethod(access, name, desc, signature, exceptions),version);
         } else if (name.equals("done")&&desc.equals("(Ljava/lang/String;Ljava/lang/Throwable;)V")) {
-            return new startWith(cv.visitMethod(access, name, desc, signature, exceptions));
+            return new startWith(cv.visitMethod(access, name, desc, signature, exceptions),0);
         }else if (name.equals("handle")&&desc.equals("(Lnet/md_5/bungee/protocol/packet/EncryptionResponse;)V")){
             return new endWith(cv.visitMethod(access, name, desc, signature, exceptions));
         }else if (name.equals("handle")&&desc.equals("(Lcom/velocitypowered/proxy/protocol/packet/EncryptionResponsePacket;)Z")){
             needLamdaLOL0 = true;
             MethodVisitor method = cv.visitMethod(access, name, desc, signature, exceptions);
             return new insertURL(method);
+        } else if (name.equals("lambda$handle$4")) {
+            if (needLamdaLOL0) {
+                return new startWith(cv.visitMethod(access, name, desc, signature, exceptions), 1);
+            }
         }
         return cv.visitMethod(access, name, desc, signature, exceptions);
-
-    }
-
-    private static class findURL extends MethodVisitor{
-        public findURL( MethodVisitor methodVisitor) {
-            super(ASM9, methodVisitor);
-        }
 
     }
 
@@ -103,39 +100,44 @@ public class SWCV extends ClassVisitor {
                 //thx @konloch for bytecode viewer 2.12
                 LOGGER.debug("i see it");
                 MethodVisitor methodVisitor = mv;
-                Label label2 = new Label();
-                methodVisitor.visitLabel(label2);
-                methodVisitor.visitFieldInsn(GETSTATIC, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "logger", "Lorg/apache/logging/log4j/Logger;");
-                methodVisitor.visitLdcInsn("test combo-auth1");
-                methodVisitor.visitMethodInsn(INVOKEINTERFACE, "org/apache/logging/log4j/Logger", "info", "(Ljava/lang/String;)V", true);
                 Label label3 = new Label();
                 methodVisitor.visitLabel(label3);
-                methodVisitor.visitVarInsn(ALOAD, 0);
                 methodVisitor.visitVarInsn(ALOAD, 7);
-                methodVisitor.visitVarInsn(ALOAD, 4);
-                methodVisitor.visitMethodInsn(INVOKESPECIAL, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "lol", "(Ljava/lang/String;[B)V", false);
-                Label label4 = new Label();
-                methodVisitor.visitLabel(label4);
-                methodVisitor.visitInsn(ICONST_1);
-                methodVisitor.visitInsn(IRETURN);
+                methodVisitor.visitMethodInsn(INVOKESTATIC, "org/figrja/combo_auth_ahent/checkauth", "setSettings", "(Ljava/lang/String;)V", false);
+
             }
         }
     }
 
     private static class startWith extends MethodVisitor{
-        public startWith( MethodVisitor methodVisitor) {
+        public startWith( MethodVisitor methodVisitor,int version) {
             super(ASM9, methodVisitor);
+            this.version = version;
         }
-
+        int version;
         public void visitCode(){
-            mv.visitCode();
-            Label insert = new Label();
-            mv.visitLabel(insert);
-            mv.visitVarInsn(ALOAD,1);
-            mv.visitMethodInsn(INVOKESTATIC,"org/figrja/combo_auth_ahent/checkauth","reBuildResult","(Ljava/lang/String;)Ljava/lang/String;",false);
-            mv.visitVarInsn(ASTORE,1);
-            mv.visitMethodInsn(INVOKESTATIC,"org/figrja/combo_auth_ahent/checkauth","getError","()Ljava/lang/Throwable;",false);
-            mv.visitVarInsn(ASTORE,2);
+            if (version==0) {
+                mv.visitCode();
+                Label insert = new Label();
+                mv.visitLabel(insert);
+                mv.visitVarInsn(ALOAD, 1);
+                mv.visitMethodInsn(INVOKESTATIC, "org/figrja/combo_auth_ahent/checkauth", "reBuildResult", "(Ljava/lang/String;)Ljava/lang/String;", false);
+                mv.visitVarInsn(ASTORE, 1);
+                mv.visitMethodInsn(INVOKESTATIC, "org/figrja/combo_auth_ahent/checkauth", "getError", "()Ljava/lang/Throwable;", false);
+                mv.visitVarInsn(ASTORE, 2);
+            } else if (version==1) {
+                Label label4 = new Label();
+                mv.visitLabel(label4);
+                mv.visitLineNumber(35, label4);
+                mv.visitVarInsn(ALOAD, 0);
+                mv.visitVarInsn(ALOAD, 1);
+                mv.visitMethodInsn(INVOKESPECIAL, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "lol", "([B)V", false);
+                Label label25 = new Label();
+                mv.visitLabel(label25);
+                mv.visitLineNumber(269, label25);
+                mv.visitFrame(Opcodes.F_NEW, 6, new Object[] {"com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "[B", "com/velocitypowered/proxy/protocol/packet/ServerLoginPacket", "java/lang/String", "java/net/http/HttpResponse", "java/lang/Throwable"}, 0, new Object[] {});
+                mv.visitInsn(RETURN);
+            }
         }
 
     }
@@ -316,13 +318,12 @@ public class SWCV extends ClassVisitor {
     public void visitEnd() {
         if (needLamdaLOL0) {
             addlol();
-            addlambdalol();
         }LOGGER.debug("end visit");
         cv.visitEnd();
     }
 
     private void addlol(){
-        MethodVisitor methodVisitor = cv.visitMethod(ACC_PRIVATE, "lol", "(Ljava/lang/String;[B)V", null, null);
+        MethodVisitor methodVisitor = cv.visitMethod(ACC_PRIVATE, "lol", "([B)V", null, null);
         methodVisitor.visitCode();
         Label label0 = new Label();
         Label label1 = new Label();
@@ -336,172 +337,52 @@ public class SWCV extends ClassVisitor {
         Label label7 = new Label();
         methodVisitor.visitTryCatchBlock(label6, label7, label5, "java/lang/Throwable");
         methodVisitor.visitLabel(label3);
-        methodVisitor.visitLineNumber(40, label3);
-        methodVisitor.visitFieldInsn(GETSTATIC, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "logger", "Lorg/apache/logging/log4j/Logger;");
-        methodVisitor.visitLdcInsn("test combo-auth2");
-        methodVisitor.visitMethodInsn(INVOKEINTERFACE, "org/apache/logging/log4j/Logger", "info", "(Ljava/lang/String;)V", true);
-        Label label8 = new Label();
-        methodVisitor.visitLabel(label8);
-        methodVisitor.visitLineNumber(41, label8);
-        methodVisitor.visitVarInsn(ALOAD, 1);
-        methodVisitor.visitMethodInsn(INVOKESTATIC, "org/figrja/combo_auth_ahent/checkauth", "setSettings", "(Ljava/lang/String;)V", false);
-        Label label9 = new Label();
-        methodVisitor.visitLabel(label9);
-        methodVisitor.visitLineNumber(43, label9);
-        methodVisitor.visitFieldInsn(GETSTATIC, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "logger", "Lorg/apache/logging/log4j/Logger;");
-        methodVisitor.visitLdcInsn("test combo-auth #1");
-        methodVisitor.visitMethodInsn(INVOKEINTERFACE, "org/apache/logging/log4j/Logger", "info", "(Ljava/lang/String;)V", true);
-        methodVisitor.visitLabel(label0);
-        methodVisitor.visitLineNumber(45, label0);
-        methodVisitor.visitFieldInsn(GETSTATIC, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "logger", "Lorg/apache/logging/log4j/Logger;");
-        methodVisitor.visitLdcInsn("test combo-auth #2");
-        methodVisitor.visitMethodInsn(INVOKEINTERFACE, "org/apache/logging/log4j/Logger", "info", "(Ljava/lang/String;)V", true);
+        methodVisitor.visitInsn(ACONST_NULL);
+        methodVisitor.visitMethodInsn(INVOKESTATIC, "org/figrja/combo_auth_ahent/checkauth", "reBuildResult", "(Ljava/lang/String;)Ljava/lang/String;", false);
+        methodVisitor.visitVarInsn(ASTORE, 2);
         Label label10 = new Label();
         methodVisitor.visitLabel(label10);
-        methodVisitor.visitLineNumber(46, label10);
+        methodVisitor.visitVarInsn(ALOAD, 2);
+        Label label11 = new Label();
+        methodVisitor.visitJumpInsn(IFNULL, label11);
+        methodVisitor.visitLabel(label0);
+       Label label12 = new Label();
+        methodVisitor.visitLabel(label12);
         methodVisitor.visitVarInsn(ALOAD, 0);
         methodVisitor.visitFieldInsn(GETFIELD, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "mcConnection", "Lcom/velocitypowered/proxy/connection/MinecraftConnection;");
-        methodVisitor.visitVarInsn(ALOAD, 2);
+        methodVisitor.visitVarInsn(ALOAD, 1);
         methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "com/velocitypowered/proxy/connection/MinecraftConnection", "enableEncryption", "([B)V", false);
         methodVisitor.visitLabel(label1);
-        methodVisitor.visitLineNumber(51, label1);
         methodVisitor.visitJumpInsn(GOTO, label6);
         methodVisitor.visitLabel(label2);
-        methodVisitor.visitLineNumber(47, label2);
-        methodVisitor.visitFrame(Opcodes.F_NEW, 3, new Object[] {"com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "java/lang/String", "[B"}, 1, new Object[] {"java/security/GeneralSecurityException"});
+        methodVisitor.visitFrame(Opcodes.F_NEW, 3, new Object[] {"com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "[B", "java/lang/String"}, 1, new Object[] {"java/security/GeneralSecurityException"});
         methodVisitor.visitVarInsn(ASTORE, 3);
-        Label label11 = new Label();
-        methodVisitor.visitLabel(label11);
-        methodVisitor.visitLineNumber(48, label11);
+        Label label13 = new Label();
+        methodVisitor.visitLabel(label13);
         methodVisitor.visitFieldInsn(GETSTATIC, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "logger", "Lorg/apache/logging/log4j/Logger;");
         methodVisitor.visitLdcInsn("Unable to enable encryption for connection");
         methodVisitor.visitVarInsn(ALOAD, 3);
         methodVisitor.visitMethodInsn(INVOKEINTERFACE, "org/apache/logging/log4j/Logger", "error", "(Ljava/lang/String;Ljava/lang/Throwable;)V", true);
-        Label label12 = new Label();
-        methodVisitor.visitLabel(label12);
-        methodVisitor.visitLineNumber(49, label12);
+        Label label14 = new Label();
+        methodVisitor.visitLabel(label14);
         methodVisitor.visitVarInsn(ALOAD, 0);
         methodVisitor.visitFieldInsn(GETFIELD, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "mcConnection", "Lcom/velocitypowered/proxy/connection/MinecraftConnection;");
         methodVisitor.visitInsn(ICONST_1);
         methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "com/velocitypowered/proxy/connection/MinecraftConnection", "close", "(Z)V", false);
         methodVisitor.visitLabel(label4);
-        methodVisitor.visitLineNumber(50, label4);
         methodVisitor.visitInsn(RETURN);
         methodVisitor.visitLabel(label6);
-        methodVisitor.visitLineNumber(52, label6);
-        methodVisitor.visitFrame(Opcodes.F_NEW, 3, new Object[] {"com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "java/lang/String", "[B"}, 0, new Object[] {});
-        methodVisitor.visitTypeInsn(NEW, "java/util/concurrent/CompletableFuture");
-        methodVisitor.visitInsn(DUP);
-        methodVisitor.visitMethodInsn(INVOKESPECIAL, "java/util/concurrent/CompletableFuture", "<init>", "()V", false);
-        methodVisitor.visitVarInsn(ASTORE, 3);
-        Label label13 = new Label();
-        methodVisitor.visitLabel(label13);
-        methodVisitor.visitLineNumber(53, label13);
-        methodVisitor.visitVarInsn(ALOAD, 3);
-        methodVisitor.visitInsn(POP);
-        methodVisitor.visitInvokeDynamicInsn("get", "()Ljava/util/function/Supplier;", new Handle(Opcodes.H_INVOKESTATIC, "java/lang/invoke/LambdaMetafactory", "metafactory", "(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;", false), new Object[]{Type.getType("()Ljava/lang/Object;"), new Handle(Opcodes.H_INVOKESTATIC, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "lambda$lol$0", "()Ljava/lang/String;", false), Type.getType("()Ljava/lang/String;")});
-        methodVisitor.visitMethodInsn(INVOKESTATIC, "java/util/concurrent/CompletableFuture", "supplyAsync", "(Ljava/util/function/Supplier;)Ljava/util/concurrent/CompletableFuture;", false);
-        methodVisitor.visitVarInsn(ALOAD, 0);
-        methodVisitor.visitInvokeDynamicInsn("accept", "(Lcom/velocitypowered/proxy/connection/client/InitialLoginSessionHandler;)Ljava/util/function/BiConsumer;", new Handle(Opcodes.H_INVOKESTATIC, "java/lang/invoke/LambdaMetafactory", "metafactory", "(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;", false), new Object[]{Type.getType("(Ljava/lang/Object;Ljava/lang/Object;)V"), new Handle(Opcodes.H_INVOKESPECIAL, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "lambda$lol$1", "(Ljava/lang/String;Ljava/lang/Throwable;)V", false), Type.getType("(Ljava/lang/String;Ljava/lang/Throwable;)V")});
-        Label label14 = new Label();
-        methodVisitor.visitLabel(label14);
-        methodVisitor.visitLineNumber(60, label14);
-        methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/util/concurrent/CompletableFuture", "whenCompleteAsync", "(Ljava/util/function/BiConsumer;)Ljava/util/concurrent/CompletableFuture;", false);
-        methodVisitor.visitInsn(POP);
-        methodVisitor.visitLabel(label7);
-        methodVisitor.visitLineNumber(78, label7);
+        methodVisitor.visitFrame(Opcodes.F_NEW, 3, new Object[] {"com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "[B", "java/lang/String"}, 0, new Object[] {});
         Label label15 = new Label();
-        methodVisitor.visitJumpInsn(GOTO, label15);
-        methodVisitor.visitLabel(label5);
-        methodVisitor.visitLineNumber(76, label5);
-        methodVisitor.visitFrame(Opcodes.F_NEW, 3, new Object[] {"com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "java/lang/String", "[B"}, 1, new Object[] {"java/lang/Throwable"});
-        methodVisitor.visitVarInsn(ASTORE, 3);
-        Label label16 = new Label();
-        methodVisitor.visitLabel(label16);
-        methodVisitor.visitLineNumber(77, label16);
-        methodVisitor.visitVarInsn(ALOAD, 3);
-        methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Throwable", "printStackTrace", "()V", false);
         methodVisitor.visitLabel(label15);
-        methodVisitor.visitLineNumber(78, label15);
-        methodVisitor.visitFrame(Opcodes.F_NEW, 3, new Object[] {"com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "java/lang/String", "[B"}, 0, new Object[] {});
-        methodVisitor.visitInsn(RETURN);
-        Label label17 = new Label();
-        methodVisitor.visitLabel(label17);
-        methodVisitor.visitLocalVariable("var9", "Ljava/security/GeneralSecurityException;", null, label11, label6, 3);
-        methodVisitor.visitLocalVariable("stringCompletableFuture", "Ljava/util/concurrent/CompletableFuture;", "Ljava/util/concurrent/CompletableFuture<Ljava/lang/String;>;", label13, label7, 3);
-        methodVisitor.visitLocalVariable("throwable", "Ljava/lang/Throwable;", null, label16, label15, 3);
-        methodVisitor.visitLocalVariable("this", "Lcom/velocitypowered/proxy/connection/client/InitialLoginSessionHandler;", null, label3, label17, 0);
-        methodVisitor.visitLocalVariable("url", "Ljava/lang/String;", null, label3, label17, 1);
-        methodVisitor.visitLocalVariable("decryptedSharedSecret", "[B", null, label3, label17, 2);
-        methodVisitor.visitMaxs(3, 4);
-        methodVisitor.visitEnd();
-    }
-    private void addlambdalol(){
-        MethodVisitor methodVisitor = cv.visitMethod(ACC_PRIVATE | ACC_STATIC | ACC_SYNTHETIC, "lambda$lol$0", "()Ljava/lang/String;", null, null);
-        methodVisitor.visitCode();
-        Label label0 = new Label();
-        methodVisitor.visitLabel(label0);
-        methodVisitor.visitLineNumber(56, label0);
-        methodVisitor.visitFieldInsn(GETSTATIC, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "logger", "Lorg/apache/logging/log4j/Logger;");
-        methodVisitor.visitLdcInsn("test combo-auth #3");
-        methodVisitor.visitMethodInsn(INVOKEINTERFACE, "org/apache/logging/log4j/Logger", "info", "(Ljava/lang/String;)V", true);
-        Label label1 = new Label();
-        methodVisitor.visitLabel(label1);
-        methodVisitor.visitLineNumber(57, label1);
-        methodVisitor.visitInsn(ACONST_NULL);
-        methodVisitor.visitMethodInsn(INVOKESTATIC, "org/figrja/combo_auth_ahent/checkauth", "reBuildResult", "(Ljava/lang/String;)Ljava/lang/String;", false);
-        methodVisitor.visitVarInsn(ASTORE, 0);
-        Label label2 = new Label();
-        methodVisitor.visitLabel(label2);
-        methodVisitor.visitLineNumber(58, label2);
-        methodVisitor.visitFieldInsn(GETSTATIC, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "logger", "Lorg/apache/logging/log4j/Logger;");
-        methodVisitor.visitLdcInsn("test combo-auth #4");
-        methodVisitor.visitMethodInsn(INVOKEINTERFACE, "org/apache/logging/log4j/Logger", "info", "(Ljava/lang/String;)V", true);
-        Label label3 = new Label();
-        methodVisitor.visitLabel(label3);
-        methodVisitor.visitLineNumber(59, label3);
-        methodVisitor.visitVarInsn(ALOAD, 0);
-        methodVisitor.visitInsn(ARETURN);
-        Label label4 = new Label();
-        methodVisitor.visitLabel(label4);
-        methodVisitor.visitLocalVariable("result", "Ljava/lang/String;", null, label2, label4, 0);
-        methodVisitor.visitMaxs(2, 1);
-        methodVisitor.visitEnd();
-    }
-    private void addlambdalol2(){
-        MethodVisitor methodVisitor = cv.visitMethod(ACC_PRIVATE | ACC_SYNTHETIC, "lambda$lol$1", "(Ljava/lang/String;Ljava/lang/Throwable;)V", null, null);
-        methodVisitor.visitCode();
-        Label label0 = new Label();
-        methodVisitor.visitLabel(label0);
-        methodVisitor.visitLineNumber(61, label0);
-        methodVisitor.visitVarInsn(ALOAD, 1);
-        Label label1 = new Label();
-        methodVisitor.visitJumpInsn(IFNULL, label1);
-        Label label2 = new Label();
-        methodVisitor.visitLabel(label2);
-        methodVisitor.visitLineNumber(62, label2);
-        methodVisitor.visitFieldInsn(GETSTATIC, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "logger", "Lorg/apache/logging/log4j/Logger;");
-        methodVisitor.visitLdcInsn("test combo-auth #5");
-        methodVisitor.visitMethodInsn(INVOKEINTERFACE, "org/apache/logging/log4j/Logger", "info", "(Ljava/lang/String;)V", true);
-        Label label3 = new Label();
-        methodVisitor.visitLabel(label3);
-        methodVisitor.visitLineNumber(63, label3);
         methodVisitor.visitFieldInsn(GETSTATIC, "com/velocitypowered/proxy/VelocityServer", "GENERAL_GSON", "Lcom/google/gson/Gson;");
-        methodVisitor.visitVarInsn(ALOAD, 1);
+        methodVisitor.visitVarInsn(ALOAD, 2);
         methodVisitor.visitLdcInsn(Type.getType("Lcom/velocitypowered/api/util/GameProfile;"));
         methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "com/google/gson/Gson", "fromJson", "(Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;", false);
         methodVisitor.visitTypeInsn(CHECKCAST, "com/velocitypowered/api/util/GameProfile");
         methodVisitor.visitVarInsn(ASTORE, 3);
-        Label label4 = new Label();
-        methodVisitor.visitLabel(label4);
-        methodVisitor.visitLineNumber(64, label4);
-        methodVisitor.visitFieldInsn(GETSTATIC, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "logger", "Lorg/apache/logging/log4j/Logger;");
-        methodVisitor.visitVarInsn(ALOAD, 3);
-        methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "com/velocitypowered/api/util/GameProfile", "toString", "()Ljava/lang/String;", false);
-        methodVisitor.visitMethodInsn(INVOKEINTERFACE, "org/apache/logging/log4j/Logger", "info", "(Ljava/lang/String;)V", true);
-        Label label5 = new Label();
-        methodVisitor.visitLabel(label5);
-        methodVisitor.visitLineNumber(65, label5);
+        Label label17 = new Label();
+        methodVisitor.visitLabel(label17);
         methodVisitor.visitVarInsn(ALOAD, 0);
         methodVisitor.visitFieldInsn(GETFIELD, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "mcConnection", "Lcom/velocitypowered/proxy/connection/MinecraftConnection;");
         methodVisitor.visitFieldInsn(GETSTATIC, "com/velocitypowered/proxy/protocol/StateRegistry", "LOGIN", "Lcom/velocitypowered/proxy/protocol/StateRegistry;");
@@ -515,52 +396,56 @@ public class SWCV extends ClassVisitor {
         methodVisitor.visitInsn(ICONST_1);
         methodVisitor.visitMethodInsn(INVOKESPECIAL, "com/velocitypowered/proxy/connection/client/AuthSessionHandler", "<init>", "(Lcom/velocitypowered/proxy/VelocityServer;Lcom/velocitypowered/proxy/connection/client/LoginInboundConnection;Lcom/velocitypowered/api/util/GameProfile;Z)V", false);
         methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "com/velocitypowered/proxy/connection/MinecraftConnection", "setActiveSessionHandler", "(Lcom/velocitypowered/proxy/protocol/StateRegistry;Lcom/velocitypowered/proxy/connection/MinecraftSessionHandler;)V", false);
-        Label label6 = new Label();
-        methodVisitor.visitLabel(label6);
-        methodVisitor.visitLineNumber(66, label6);
-        Label label7 = new Label();
-        methodVisitor.visitJumpInsn(GOTO, label7);
-        methodVisitor.visitLabel(label1);
-        methodVisitor.visitLineNumber(67, label1);
-        methodVisitor.visitFrame(Opcodes.F_NEW, 3, new Object[] {"com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "java/lang/String", "java/lang/Throwable"}, 0, new Object[] {});
+
+        Label label19 = new Label();
+        methodVisitor.visitJumpInsn(GOTO, label19);
+        methodVisitor.visitLabel(label11);
+        methodVisitor.visitFrame(Opcodes.F_NEW, 3, new Object[] {"com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "[B", "java/lang/String"}, 0, new Object[] {});
         methodVisitor.visitMethodInsn(INVOKESTATIC, "org/figrja/combo_auth_ahent/checkauth", "getError", "()Ljava/lang/Throwable;", false);
-        Label label8 = new Label();
-        methodVisitor.visitJumpInsn(IFNULL, label8);
-        Label label9 = new Label();
-        methodVisitor.visitLabel(label9);
-        methodVisitor.visitLineNumber(68, label9);
+        Label label20 = new Label();
+        methodVisitor.visitJumpInsn(IFNULL, label20);
+        Label label21 = new Label();
+        methodVisitor.visitLabel(label21);
         methodVisitor.visitVarInsn(ALOAD, 0);
         methodVisitor.visitFieldInsn(GETFIELD, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "inbound", "Lcom/velocitypowered/proxy/connection/client/LoginInboundConnection;");
         methodVisitor.visitLdcInsn("multiplayer.disconnect.authservers_down");
         methodVisitor.visitMethodInsn(INVOKESTATIC, "net/kyori/adventure/text/Component", "translatable", "(Ljava/lang/String;)Lnet/kyori/adventure/text/TranslatableComponent;", true);
         methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "com/velocitypowered/proxy/connection/client/LoginInboundConnection", "disconnect", "(Lnet/kyori/adventure/text/Component;)V", false);
-        methodVisitor.visitJumpInsn(GOTO, label7);
-        methodVisitor.visitLabel(label8);
-        methodVisitor.visitLineNumber(70, label8);
-        methodVisitor.visitFrame(Opcodes.F_NEW, 3, new Object[] {"com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "java/lang/String", "java/lang/Throwable"}, 0, new Object[] {});
+        methodVisitor.visitJumpInsn(GOTO, label19);
+        methodVisitor.visitLabel(label20);
+        methodVisitor.visitFrame(Opcodes.F_NEW, 3, new Object[] {"com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "[B", "java/lang/String"}, 0, new Object[] {});
         methodVisitor.visitVarInsn(ALOAD, 0);
         methodVisitor.visitFieldInsn(GETFIELD, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "inbound", "Lcom/velocitypowered/proxy/connection/client/LoginInboundConnection;");
         methodVisitor.visitLdcInsn("velocity.error.online-mode-only");
         methodVisitor.visitFieldInsn(GETSTATIC, "net/kyori/adventure/text/format/NamedTextColor", "RED", "Lnet/kyori/adventure/text/format/NamedTextColor;");
         methodVisitor.visitMethodInsn(INVOKESTATIC, "net/kyori/adventure/text/Component", "translatable", "(Ljava/lang/String;Lnet/kyori/adventure/text/format/TextColor;)Lnet/kyori/adventure/text/TranslatableComponent;", true);
         methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "com/velocitypowered/proxy/connection/client/LoginInboundConnection", "disconnect", "(Lnet/kyori/adventure/text/Component;)V", false);
-        methodVisitor.visitLabel(label7);
-        methodVisitor.visitLineNumber(73, label7);
-        methodVisitor.visitFrame(Opcodes.F_NEW, 3, new Object[] {"com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "java/lang/String", "java/lang/Throwable"}, 0, new Object[] {});
-        methodVisitor.visitFieldInsn(GETSTATIC, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "logger", "Lorg/apache/logging/log4j/Logger;");
-        methodVisitor.visitLdcInsn("test combo-auth #6");
-        methodVisitor.visitMethodInsn(INVOKEINTERFACE, "org/apache/logging/log4j/Logger", "info", "(Ljava/lang/String;)V", true);
-        Label label10 = new Label();
-        methodVisitor.visitLabel(label10);
-        methodVisitor.visitLineNumber(75, label10);
+        methodVisitor.visitLabel(label19);
+        methodVisitor.visitFrame(Opcodes.F_NEW, 3, new Object[] {"com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "[B", "java/lang/String"}, 0, new Object[] {});
+      methodVisitor.visitLabel(label7);
+        Label label22 = new Label();
+        methodVisitor.visitJumpInsn(GOTO, label22);
+        methodVisitor.visitLabel(label5);
+        methodVisitor.visitFrame(Opcodes.F_NEW, 2, new Object[] {"com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "[B"}, 1, new Object[] {"java/lang/Throwable"});
+        methodVisitor.visitVarInsn(ASTORE, 2);
+        Label label23 = new Label();
+        methodVisitor.visitLabel(label23);
+        methodVisitor.visitVarInsn(ALOAD, 2);
+        methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Throwable", "printStackTrace", "()V", false);
+        methodVisitor.visitLabel(label22);
+        methodVisitor.visitFrame(Opcodes.F_NEW, 2, new Object[] {"com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler", "[B"}, 0, new Object[] {});
         methodVisitor.visitInsn(RETURN);
-        Label label11 = new Label();
-        methodVisitor.visitLabel(label11);
-        methodVisitor.visitLocalVariable("profile", "Lcom/velocitypowered/api/util/GameProfile;", null, label4, label6, 3);
-        methodVisitor.visitLocalVariable("this", "Lcom/velocitypowered/proxy/connection/client/InitialLoginSessionHandler;", null, label0, label11, 0);
-        methodVisitor.visitLocalVariable("result", "Ljava/lang/String;", null, label0, label11, 1);
-        methodVisitor.visitLocalVariable("Throwable", "Ljava/lang/Throwable;", null, label0, label11, 2);
+        Label label24 = new Label();
+        methodVisitor.visitLabel(label24);
+        methodVisitor.visitLocalVariable("var9", "Ljava/security/GeneralSecurityException;", null, label13, label6, 3);
+        methodVisitor.visitLocalVariable("profile", "Lcom/velocitypowered/api/util/GameProfile;", null, label17, label17, 3);
+        methodVisitor.visitLocalVariable("result", "Ljava/lang/String;", null, label10, label7, 2);
+        methodVisitor.visitLocalVariable("throwable", "Ljava/lang/Throwable;", null, label23, label22, 2);
+        methodVisitor.visitLocalVariable("this", "Lcom/velocitypowered/proxy/connection/client/InitialLoginSessionHandler;", null, label3, label24, 0);
+        methodVisitor.visitLocalVariable("decryptedSharedSecret", "[B", null, label3, label24, 1);
         methodVisitor.visitMaxs(8, 4);
         methodVisitor.visitEnd();
     }
+
+
 }

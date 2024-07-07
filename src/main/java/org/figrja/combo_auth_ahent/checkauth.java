@@ -160,7 +160,6 @@ public class checkauth {
         checkauth.serverid = serverid;
     }
     public static void setSettings(String url){
-        LOGGER.info(url);
         String[] surl = (url.split("\\?")[1]).split("&");
         for (String s:surl){
             if (s.startsWith("username=")){
