@@ -10,6 +10,8 @@ import java.io.IOException;
 import static org.objectweb.asm.Opcodes.ASM9;
 
 public class ClassTransformer {
+
+    static PreCV classData;
     static LoggerMain LOGGER = Premain.LOGGER;
     public ClassTransformer(){
         LOGGER.debug("hii");
@@ -23,6 +25,10 @@ public class ClassTransformer {
     }
 
     public static byte[] start(byte[] classfileBuffer){
+        ClassReader cr = new ClassReader(classfileBuffer);
+        ClassWriter cw = new ClassWriter(cr,ClassWriter.COMPUTE_FRAMES);
+        classData = new PreCV(ASM9, cw);
+        cr.accept(classData, 0);
         return trans(new ClassReader(classfileBuffer));
     }
     private static byte[] trans(ClassReader classReader){

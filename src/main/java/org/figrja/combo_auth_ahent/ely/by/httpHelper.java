@@ -103,13 +103,17 @@ public class httpHelper {
         } else if (result.getError() != null) {
             return null;
         } else {
-            result.setId(str2uuid(result.id));
+            //result.setId(str2uuid(result.id));
             return result;
         }
     }
 
     private static UUID str2uuid(String uuid) {
-        String comUUID = uuid.length() == 32 ? uuid.substring(0, 8) + "-" + uuid.substring(8, 12) + "-" + uuid.substring(12, 16) + "-" + uuid.substring(16, 20) + "-" + uuid.substring(20) : uuid;
+        String comUUID = uuid.length() == 32 ? uuid.substring(0, 8) +
+                "-" + uuid.substring(8, 12) +
+                "-" + uuid.substring(12, 16) +
+                "-" + uuid.substring(16, 20) +
+                "-" + uuid.substring(20) : uuid;
         return UUID.fromString(comUUID);
     }
 
