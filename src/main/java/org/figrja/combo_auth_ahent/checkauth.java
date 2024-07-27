@@ -137,6 +137,7 @@ public class checkauth {
     }
 
     public static String reBuildResult(String result){
+        if (result ==null){result = "";}
         LOGGER.debugRes("been "+profileName+" + "+serverid);
         LOGGER.debugRes(result);
         if (Objects.equals(result, "")) {
