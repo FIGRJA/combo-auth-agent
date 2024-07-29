@@ -1,7 +1,5 @@
 package org.figrja.combo_auth_ahent;
 
-import com.google.gson.Gson;
-import org.apache.logging.log4j.core.util.FileUtils;
 import org.figrja.combo_auth_ahent.config.Config;
 import org.figrja.combo_auth_ahent.config.debuglogger.Debug;
 import org.figrja.combo_auth_ahent.config.debuglogger.DebugAll;
@@ -169,8 +167,8 @@ public class Premain implements ClassFileTransformer {
     static private void loadURLLoader (){
         String[][] names = new String[3][7];
         names[0] = new String[]{"com", "google", "code", "gson", "gson","2.10.1","gson-2.10.1.jar"};
-        names[1] = new String[]{"org", "figrja", "combo-auth","1.4.0","combo-auth-cut.jar"};
-        if (!in)names[2] = new String[]{"org", "figrja", "combo-auth","1.4.0","combo-auth.jar"};
+        names[1] = new String[]{"org", "figrja", "combo-auth","1.5.0","combo-auth-cut.jar"};
+        if (!in)names[2] = new String[]{"org", "figrja", "combo-auth","1.5.0","combo-auth.jar"};
         try{
             int count = 0;
             URL[] urls;

@@ -47,6 +47,13 @@
             <systemPath>D:/Desktop/s1/mods/combo-auth-agent/velocity-3.3.0-SNAPSHOT-400.jar</systemPath>
             <scope>system</scope>
         </dependency>
+        <dependency>
+            <groupId>net.md_5</groupId>
+            <artifactId>bungee</artifactId>
+            <version>3.3.0</version>
+            <systemPath>D:/Desktop/s1/mods/combo-auth-agent/BungeeCord.jar</systemPath>
+            <scope>system</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

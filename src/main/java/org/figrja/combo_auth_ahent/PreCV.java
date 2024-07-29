@@ -13,6 +13,8 @@ public class PreCV extends ClassVisitor {
     }
     static int VelocityURLIndex;static int VelocitySecretIndex;
 
+    static int BungeeCordURLIndex;
+
     public MethodVisitor visitMethod(int access, String name , String desc , String signature, String[] exceptions){
         if (name.equals("handle")&&desc.equals("(Lcom/velocitypowered/proxy/protocol/packet/EncryptionResponsePacket;)Z")) {
             MethodVisitor method = cv.visitMethod(access, name, desc, signature, exceptions);
@@ -39,6 +41,8 @@ public class PreCV extends ClassVisitor {
             } else if (name.equals("decryptedSharedSecret")) {
 
                 VelocitySecretIndex = index;
+            } else if (name.equals("authURL")) {
+                BungeeCordURLIndex = index;
             }
             mv.visitLocalVariable(name, descriptor, signature, start, end, index);
         }
