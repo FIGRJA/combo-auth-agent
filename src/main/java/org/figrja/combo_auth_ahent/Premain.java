@@ -143,11 +143,11 @@ public class Premain implements ClassFileTransformer {
 
 
     static private void loadURLLoader (){
-        String[][] names = new String[4][7];
+        String[][] names = new String[3][7];
         names[0] = new String[]{"com", "google", "code", "gson", "gson","2.10.1","gson-2.10.1.jar"};
         names[1] = new String[]{"org", "figrja", "combo-auth","1.5.0","combo-auth-cut.jar"};
-        names[2] = new String[]{"org", "ow2","asm", "asm","9.2","asm-9.2.jar"};
-        if (!in)names[3] = new String[]{"org", "figrja", "combo-auth","1.5.0","combo-auth.jar"};
+        //names[2] = new String[]{"org", "ow2","asm", "asm","9.2","asm-9.2.jar"};
+        if (!in)names[2] = new String[]{"org", "figrja", "combo-auth","1.5.0","combo-auth.jar"};
         try{
             int count = 0;
             URL[] urls;
@@ -163,7 +163,7 @@ public class Premain implements ClassFileTransformer {
                 for (String s:lib){
                     if (!path.exists()){
                         path.mkdir();
-                        LOGGER.info("create dir : " + s);
+                        //LOGGER.info("create dir : " + s);
                     }
                     path = new File(path,s);
 
