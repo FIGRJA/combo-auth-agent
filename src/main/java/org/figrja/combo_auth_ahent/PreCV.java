@@ -18,14 +18,18 @@ public class PreCV extends ClassVisitor {
     public MethodVisitor visitMethod(int access, String name , String desc , String signature, String[] exceptions){
         if (name.equals("handle")&&desc.equals("(Lcom/velocitypowered/proxy/protocol/packet/EncryptionResponsePacket;)Z")) {
             MethodVisitor method = cv.visitMethod(access, name, desc, signature, exceptions);
-            return new PreCV.velocityFindURL(method);
+            return new PreCV.velocityFindURL(method,api);
+        }else if (name.equals("handle")&&desc.equals("(Lnet/md_5/bungee/protocol/packet/EncryptionResponse;)V")) {
+            MethodVisitor method = cv.visitMethod(access, name, desc, signature, exceptions);
+            return new PreCV.velocityFindURL(method,api);
+
         }
         return null;
     }
 
     private static class velocityFindURL extends MethodVisitor{
-        public velocityFindURL( MethodVisitor methodVisitor) {
-            super(ASM9, methodVisitor);
+        public velocityFindURL( MethodVisitor methodVisitor,int api) {
+            super(api, methodVisitor);
 
         }
 

@@ -10,18 +10,11 @@
 
     <properties>
 
-        <maven.compiler.source>9</maven.compiler.source>
-        <maven.compiler.target>9</maven.compiler.target>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>com.mojang</groupId>
-            <artifactId>authlib</artifactId>
-            <version>6.0.52</version>
-            <systemPath>C:/Users/Dima/.gradle/caches/modules-2/files-2.1/com.mojang/authlib/6.0.54/de8bc95660e1b2fe8793fd427a7a10dcec5b3ea7/authlib-6.0.54.jar</systemPath>
-            <scope>system</scope>
-        </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
@@ -38,21 +31,7 @@
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
             <version>9.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com</groupId>
-            <artifactId>velocitypowered</artifactId>
-            <version>3.3.0</version>
-            <systemPath>D:/Desktop/s1/mods/combo-auth-agent/velocity-3.3.0-SNAPSHOT-400.jar</systemPath>
-            <scope>system</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.md_5</groupId>
-            <artifactId>bungee</artifactId>
-            <version>3.3.0</version>
-            <systemPath>D:/Desktop/s1/mods/combo-auth-agent/BungeeCord.jar</systemPath>
-            <scope>system</scope>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     <build>
@@ -62,7 +41,7 @@
                 <configuration>
                     <archive>
                         <manifestFile>
-                            src/main/resources/meta-inf/MANIFEST.MF
+                            src/main/resources/META-INF/MANIFEST.MF
                         </manifestFile>
                     </archive>
                         <descriptorRefs>
@@ -83,8 +62,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>16</source>
-                    <target>16</target>
+                    <source>8</source>
+                    <target>8</target>
                 </configuration>
             </plugin>
         </plugins>

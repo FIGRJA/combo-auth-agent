@@ -7,7 +7,7 @@ import org.objectweb.asm.ClassWriter;
 
 import java.io.IOException;
 
-import static org.objectweb.asm.Opcodes.ASM9;
+import static org.objectweb.asm.Opcodes.*;
 
 public class ClassTransformer {
 
@@ -16,18 +16,22 @@ public class ClassTransformer {
     public ClassTransformer(){
         LOGGER.debug("hii");
     }
-    public static byte[] start(String className){
-        try {
-            return trans(new ClassReader(className));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+
+    static int ASM;
+
+    private static void checkASM(){
+        LOGGER.info(System.getProperty("java.version"));
+        if (System.getProperty("java.version").startsWith("1.8") ){
+            ASM = ASM5;
+        }else {
+            ASM = ASM9;
         }
     }
-
     public static byte[] start(byte[] classfileBuffer){
+        checkASM();
         ClassReader cr = new ClassReader(classfileBuffer);
         ClassWriter cw = new ClassWriter(cr,ClassWriter.COMPUTE_FRAMES);
-        classData = new PreCV(ASM9, cw);
+        classData = new PreCV(ASM, cw);
         cr.accept(classData, 0);
         return trans(new ClassReader(classfileBuffer));
     }
@@ -35,9 +39,8 @@ public class ClassTransformer {
         LOGGER.info("try");
         try {
             ClassWriter classWriter = new ClassWriter(classReader,ClassWriter.COMPUTE_FRAMES);
-            SWCV classVisitor = new SWCV(ASM9, classWriter);
+            SWCV classVisitor = new SWCV(ASM, classWriter);
             classReader.accept(classVisitor, 0);
-
             LOGGER.info("combo_auth has been enabled!");
             return classWriter.toByteArray();
         }catch (Throwable a){

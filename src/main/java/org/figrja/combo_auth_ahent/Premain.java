@@ -15,6 +15,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.security.ProtectionDomain;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.jar.JarFile;
 
@@ -26,28 +27,28 @@ public class Premain implements ClassFileTransformer {
     static Config config;
 
     private static URLLoader myLoader;
-    private static Class<?> kostbll;
+    private static HashMap<String,Class<?>> kostbll = new HashMap<>();
     static Instrumentation ins;
 
     static  File file;
 
     private static boolean in = false;
 
-    public Premain(){
-        loadURLLoader();
+    public void setLogger(LoggerMain LOGGER){
+        Premain.LOGGER = LOGGER;
+    }
 
-        LOGGER.info("start load config");
-        try {
-            String s = "org.figrja.combo_auth_ahent.auth";
-            Class<?> aClass = myLoader.findClass(s);
-            Constructor constructors = aClass.getConstructor();
-            Object o = constructors.newInstance();
-            Method method = aClass.getMethod("onInitializeServer");
-            config = (Config) method.invoke(o);
-            LOGGER.info("loadded");
-        }catch (Throwable e){
-            e.printStackTrace();
-        }
+    public Premain(){
+            loadURLLoader();
+
+            LOGGER.info("start load");
+            try {
+                config = (Config) callMethod("org.figrja.combo_auth_ahent.auth", "onInitializeServer");
+                LOGGER.info("loadded");
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+
         if (config.getGebugStatus() != null) {
             LOGGER.info(config.getGebugStatus());
             if (config.getGebugStatus().equals("detail")) {
@@ -75,7 +76,7 @@ public class Premain implements ClassFileTransformer {
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer){
         if (Objects.equals(className, "net/md_5/bungee/Bootstrap")||
                 Objects.equals(className, "com/velocitypowered/proxy/Velocity")){
-            LOGGER.info("try work with it");
+            //LOGGER.info("try work with it");
         }
         else if (Objects.equals(className, "net/minecraft/bundler/Main")) {
             LOGGER.info("hiii vanila!!!");
@@ -86,8 +87,8 @@ public class Premain implements ClassFileTransformer {
                 Objects.equals(className, "com/velocitypowered/proxy/connection/client/InitialLoginSessionHandler")) {
 
             try {
-
-                byte[] bytes = ClassTransformer.start(classfileBuffer);
+                //callMethod("org.figrja.combo_auth_ahent.Premain","setLogger",LOGGER);
+                byte[] bytes = (byte[]) callMethod("org.figrja.combo_auth_ahent.ClassTransformer","start",classfileBuffer);
                 try {
                     ins.appendToBootstrapClassLoaderSearch(new JarFile(file));
                 } catch (Throwable e) {
@@ -106,15 +107,6 @@ public class Premain implements ClassFileTransformer {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
-        }else if (Objects.equals(className, "net/md_5/bungee/connection/InitialHandler$5")) {
-
-            try {
-
-                return ClassTransformer.start(classfileBuffer);
-            } catch (Throwable e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
         }
         return classfileBuffer;
     }
@@ -122,39 +114,25 @@ public class Premain implements ClassFileTransformer {
 
     public static <T> T fromGson(String json, Class<T> classOfT)  {
         LOGGER.debugRes("start transform");
-        try {
-            if (kostbll ==null) {
-                String s = "org.figrja.combo_auth_ahent.KOSTblL";
-                kostbll = myLoader.findClass(s);
-            }
-            Constructor constructors = kostbll.getConstructor();
-            Object o = constructors.newInstance();
-            Method method = null;
-            for (Method m :kostbll.getMethods()){
-                if (m.getName().equals("fromGson")) method = m;
-            }
-            return (T) method.invoke(o,json,classOfT);
-        }
-        catch (Throwable e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        return (T) callMethod("org.figrja.combo_auth_ahent.KOSTblL","fromGson",json,classOfT);
     }
     public static String toGson(Object json)  {
         LOGGER.debugRes("start transform");
-        Class<?> aClass = null;
+        return (String) callMethod("org.figrja.combo_auth_ahent.KOSTblL","toGson",json);
+    }
+
+    private static Object callMethod(String _class,String name,Object... args){
         try {
-            if (kostbll ==null) {
-                String s = "org.figrja.combo_auth_ahent.KOSTblL";
-                kostbll = myLoader.findClass(s);
+            if (kostbll.get(_class) ==null) {
+                kostbll.put(_class,myLoader.findClass(_class));
             }
-            Constructor constructors = kostbll.getConstructor();
+            Constructor constructors = kostbll.get(_class).getConstructor();
             Object o = constructors.newInstance();
             Method method = null;
-            for (Method m :kostbll.getMethods()){
-                if (m.getName().equals("toGson")) method = m;
+            for (Method m :kostbll.get(_class).getMethods()){
+                if (m.getName().equals(name)) method = m;
             }
-            return (String) method.invoke(o,json);
+            return method.invoke(o,args);
         }
         catch (Throwable e) {
             e.printStackTrace();
@@ -165,10 +143,11 @@ public class Premain implements ClassFileTransformer {
 
 
     static private void loadURLLoader (){
-        String[][] names = new String[3][7];
+        String[][] names = new String[4][7];
         names[0] = new String[]{"com", "google", "code", "gson", "gson","2.10.1","gson-2.10.1.jar"};
         names[1] = new String[]{"org", "figrja", "combo-auth","1.5.0","combo-auth-cut.jar"};
-        if (!in)names[2] = new String[]{"org", "figrja", "combo-auth","1.5.0","combo-auth.jar"};
+        names[2] = new String[]{"org", "ow2","asm", "asm","9.2","asm-9.2.jar"};
+        if (!in)names[3] = new String[]{"org", "figrja", "combo-auth","1.5.0","combo-auth.jar"};
         try{
             int count = 0;
             URL[] urls;

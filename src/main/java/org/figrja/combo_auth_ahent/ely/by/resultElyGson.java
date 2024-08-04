@@ -1,7 +1,5 @@
 package org.figrja.combo_auth_ahent.ely.by;
 
-import com.mojang.authlib.properties.Property;
-import com.mojang.authlib.properties.PropertyMap;
 
 import java.util.UUID;
 
